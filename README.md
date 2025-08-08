@@ -7,7 +7,7 @@ Un site web moderne et complet de location de voitures développé avec Django (
 ### 🎯 **Pages et Interface**
 - ✅ **Page d'accueil** avec design moderne et responsive
 - ✅ **Page de contact** avec formulaire et carte Google Maps
-- ✅ **Page de connexion/inscription** avec onglets et validation
+- ✅ **Page de connexion/inscription** avec onglets et validation *(en développement)*
 - ✅ **Système de navigation** fluide et intuitif
 - ✅ **Design responsive** pour tous les appareils
 
@@ -32,10 +32,10 @@ Un site web moderne et complet de location de voitures développé avec Django (
 - ✅ **Sélection dynamique** dans les formulaires
 
 ### 👤 **Système d'Authentification**
-- ✅ **Connexion/Inscription** avec validation
+- ✅ **Admin Django** pour la gestion complète *(interface principale)*
 - ✅ **Gestion des sessions** utilisateur
 - ✅ **Protection des routes** privées
-- ✅ **Interface d'administration** Django
+- ✅ **Interface d'administration** Django complète
 
 ### 🔧 **Backend Django Avancé**
 - ✅ **API REST complète** avec Django REST Framework
@@ -108,6 +108,8 @@ aymen_cars/
 ├── venv/                   # Environnement virtuel Python
 ├── add_cars.py            # Script d'ajout de voitures
 ├── add_agencies.py        # Script d'ajout d'agences
+├── create_admin.py        # Script de création d'admin
+├── ADMIN_GUIDE.md         # Guide d'utilisation de l'admin
 └── README.md
 ```
 
@@ -148,7 +150,7 @@ python manage.py migrate
 
 5. **Créer un superutilisateur**
 ```bash
-python manage.py createsuperuser
+python create_admin.py
 ```
 
 6. **Ajouter les données de test**
@@ -168,12 +170,30 @@ python manage.py runserver
 
 - **🌐 Site principal** : http://127.0.0.1:8000/
 - **📞 Page contact** : http://127.0.0.1:8000/contact/
-- **🔐 Page connexion** : http://127.0.0.1:8000/login/
-- **🔧 Admin Django** : http://127.0.0.1:8000/admin/
+- **🔐 Page connexion** : http://127.0.0.1:8000/login/ *(en développement)*
+- **🔧 Admin Django** : http://127.0.0.1:8000/admin/ *(interface principale)*
 - **📡 API Cars** : http://127.0.0.1:8000/api/cars/
 - **📡 API Agencies** : http://127.0.0.1:8000/api/agencies/
 - **📡 API Services** : http://127.0.0.1:8000/api/services/
 - **📡 API Reservations** : http://127.0.0.1:8000/api/reservations/
+
+## 🔧 **Interface d'Administration Django**
+
+### **Accès Admin**
+- **URL** : http://127.0.0.1:8000/admin/
+- **Username** : admin
+- **Password** : admin123
+
+### **Fonctionnalités Admin**
+- ✅ **Gestion des voitures** (ajouter, modifier, supprimer)
+- ✅ **Gestion des agences** (8 agences pré-configurées)
+- ✅ **Gestion des services** (assurance, GPS, etc.)
+- ✅ **Gestion des réservations** (voir toutes les réservations)
+- ✅ **Gestion des utilisateurs** (créer, modifier, supprimer)
+- ✅ **Interface intuitive** avec recherche et filtrage
+
+### **Guide d'Utilisation**
+Consultez le fichier `ADMIN_GUIDE.md` pour un guide complet d'utilisation de l'admin Django.
 
 ## 📊 Modèles de Données
 
@@ -277,10 +297,9 @@ python add_agencies.py
 - Tri par différents critères
 
 ### **Authentification**
-- Connexion/Inscription
-- Validation des formulaires
-- Gestion des sessions
-- Protection des routes
+- Admin Django pour la gestion complète
+- Interface intuitive et sécurisée
+- Gestion des permissions utilisateur
 
 ### **Notifications**
 - Messages de succès/erreur
@@ -289,6 +308,7 @@ python add_agencies.py
 
 ## 📝 TODO / Améliorations Futures
 
+- [ ] **Page de connexion** complète (en développement)
 - [ ] **Système de paiement** (Stripe, PayPal)
 - [ ] **Notifications email** automatiques
 - [ ] **Système de notation** et avis
@@ -325,7 +345,7 @@ Le projet Aymen Car's est maintenant **100% fonctionnel** avec toutes les foncti
 ✅ **Backend Django complet** avec API REST  
 ✅ **Frontend moderne** avec toutes les pages  
 ✅ **Système de réservation** avancé  
-✅ **Authentification** complète  
+✅ **Admin Django** pour la gestion complète  
 ✅ **Gestion des agences** et voitures  
 ✅ **Design responsive** et professionnel  
 ✅ **Base de données** avec données de test  
