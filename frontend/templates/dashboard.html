@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Admin - Aymen Car's</title>
+    <link rel="stylesheet" href="../static/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        .sidebar {
+            width: 250px;
+            background: #2c3e50;
+            color: white;
+            padding: 2rem 0;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+        }
+        
+        .sidebar-header {
+            padding: 0 2rem 2rem;
+            border-bottom: 1px solid #34495e;
+        }
+        
+        .sidebar-header h2 {
+            color: #FF6600;
+            margin: 0;
+        }
+        
+        .sidebar-menu {
+            padding: 2rem 0;
+        }
+        
+        .menu-item {
+            padding: 1rem 2rem;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            border-left: 3px solid transparent;
+        }
+        
+        .menu-item:hover {
+            background: #34495e;
+            border-left-color: #FF6600;
+        }
+        
+        .menu-item.active {
+            background: #34495e;
+            border-left-color: #FF6600;
+        }
+        
+        .menu-item i {
+            margin-right: 1rem;
+            width: 20px;
+        }
+        
+        .main-content {
+            flex: 1;
+            margin-left: 250px;
+            padding: 2rem;
+            background: #f8f9fa;
+        }
+        
+        .dashboard-header {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .dashboard-title {
+            color: #2c3e50;
+            margin: 0 0 1rem 0;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #FF6600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            color: #666;
+            font-size: 1.1rem;
+        }
+        
+        .content-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        
+        .section-title {
+            color: #2c3e50;
+            margin-bottom: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .btn-add {
+            background: #FF6600;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+        
+        .btn-add:hover {
+            background: #E55A00;
+        }
+        
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .data-table th,
+        .data-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .data-table th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .data-table tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        
+        .status-confirmed {
+            background: #e8f5e8;
+            color: #2e7d32;
+        }
+        
+        .status-pending {
+            background: #fff3e0;
+            color: #f57c00;
+        }
+        
+        .status-cancelled {
+            background: #ffebee;
+            color: #c62828;
+        }
+        
+        .action-btn {
+            padding: 0.25rem 0.5rem;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            margin-right: 0.5rem;
+        }
+        
+        .btn-edit {
+            background: #3498db;
+            color: white;
+        }
+        
+        .btn-delete {
+            background: #e74c3c;
+            color: white;
+        }
+        
+        .btn-view {
+            background: #27ae60;
+            color: white;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                position: relative;
+                height: auto;
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+            
+            .dashboard-container {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h2>🚗 Aymen Car's</h2>
+                <p>Administration</p>
+            </div>
+            <div class="sidebar-menu">
+                <div class="menu-item active" onclick="showSection('overview')">
+                    📊 Vue d'ensemble
+                </div>
+                <div class="menu-item" onclick="showSection('cars')">
+                    🚗 Gestion des voitures
+                </div>
+                <div class="menu-item" onclick="showSection('reservations')">
+                    📅 Réservations
+                </div>
+                <div class="menu-item" onclick="showSection('agencies')">
+                    🏢 Agences
+                </div>
+                <div class="menu-item" onclick="showSection('users')">
+                    👥 Utilisateurs
+                </div>
+                <div class="menu-item" onclick="showSection('services')">
+                    ⚙️ Services
+                </div>
+                <div class="menu-item" onclick="logout()">
+                    🚪 Déconnexion
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Vue d'ensemble -->
+            <div id="overview" class="content-section">
+                <div class="dashboard-header">
+                    <h1 class="dashboard-title">Vue d'ensemble</h1>
+                    <p>Bienvenue dans votre tableau de bord d'administration</p>
+                </div>
+                
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number" id="total-cars">0</div>
+                        <div class="stat-label">Voitures</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="total-reservations">0</div>
+                        <div class="stat-label">Réservations</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="total-users">0</div>
+                        <div class="stat-label">Utilisateurs</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="total-revenue">0€</div>
+                        <div class="stat-label">Revenus</div>
+                    </div>
+                </div>
+                
+                <div class="content-section">
+                    <h3 class="section-title">Réservations récentes</h3>
+                    <div id="recent-reservations">
+                        <p>Chargement...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gestion des voitures -->
+            <div id="cars" class="content-section hidden">
+                <h3 class="section-title">
+                    Gestion des voitures
+                    <button class="btn-add" onclick="showAddCarModal()">+ Ajouter une voiture</button>
+                </h3>
+                <div id="cars-list">
+                    <p>Chargement...</p>
+                </div>
+            </div>
+
+            <!-- Réservations -->
+            <div id="reservations" class="content-section hidden">
+                <h3 class="section-title">Gestion des réservations</h3>
+                <div id="reservations-list">
+                    <p>Chargement...</p>
+                </div>
+            </div>
+
+            <!-- Agences -->
+            <div id="agencies" class="content-section hidden">
+                <h3 class="section-title">
+                    Gestion des agences
+                    <button class="btn-add" onclick="showAddAgencyModal()">+ Ajouter une agence</button>
+                </h3>
+                <div id="agencies-list">
+                    <p>Chargement...</p>
+                </div>
+            </div>
+
+            <!-- Utilisateurs -->
+            <div id="users" class="content-section hidden">
+                <h3 class="section-title">Gestion des utilisateurs</h3>
+                <div id="users-list">
+                    <p>Chargement...</p>
+                </div>
+            </div>
+
+            <!-- Services -->
+            <div id="services" class="content-section hidden">
+                <h3 class="section-title">
+                    Gestion des services
+                    <button class="btn-add" onclick="showAddServiceModal()">+ Ajouter un service</button>
+                </h3>
+                <div id="services-list">
+                    <p>Chargement...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Configuration de l'API
+        const API_BASE_URL = 'http://127.0.0.1:8000/api';
+        
+        // Vérifier l'authentification admin
+        function checkAdminAuth() {
+            const isLoggedIn = localStorage.getItem('isLoggedIn');
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            
+            if (!isLoggedIn || !user.is_staff) {
+                alert('Accès non autorisé. Redirection vers la page de connexion.');
+                window.location.href = '/login/';
+            }
+        }
+        
+        // Afficher une section
+        function showSection(sectionId) {
+            // Masquer toutes les sections
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.add('hidden');
+            });
+            
+            // Afficher la section demandée
+            document.getElementById(sectionId).classList.remove('hidden');
+            
+            // Mettre à jour le menu actif
+            document.querySelectorAll('.menu-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Charger les données de la section
+            loadSectionData(sectionId);
+        }
+        
+        // Charger les données d'une section
+        async function loadSectionData(sectionId) {
+            switch(sectionId) {
+                case 'overview':
+                    loadOverviewData();
+                    break;
+                case 'cars':
+                    loadCarsData();
+                    break;
+                case 'reservations':
+                    loadReservationsData();
+                    break;
+                case 'agencies':
+                    loadAgenciesData();
+                    break;
+                case 'users':
+                    loadUsersData();
+                    break;
+                case 'services':
+                    loadServicesData();
+                    break;
+            }
+        }
+        
+        // Charger les données de la vue d'ensemble
+        async function loadOverviewData() {
+            try {
+                const [carsResponse, reservationsResponse, usersResponse] = await Promise.all([
+                    fetch(`${API_BASE_URL}/cars/`),
+                    fetch(`${API_BASE_URL}/reservations/`),
+                    fetch('/api/admin/users/')
+                ]);
+                
+                const cars = await carsResponse.json();
+                const reservations = await reservationsResponse.json();
+                const users = await usersResponse.json();
+                
+                // Mettre à jour les statistiques
+                document.getElementById('total-cars').textContent = cars.length;
+                document.getElementById('total-reservations').textContent = reservations.length;
+                document.getElementById('total-users').textContent = users.length;
+                
+                // Calculer les revenus
+                const totalRevenue = reservations.reduce((sum, res) => sum + parseFloat(res.total_price || 0), 0);
+                document.getElementById('total-revenue').textContent = `${totalRevenue.toFixed(2)}€`;
+                
+                // Afficher les réservations récentes
+                displayRecentReservations(reservations.slice(0, 5));
+                
+            } catch (error) {
+                console.error('Erreur lors du chargement des données:', error);
+            }
+        }
+        
+        // Afficher les réservations récentes
+        function displayRecentReservations(reservations) {
+            const container = document.getElementById('recent-reservations');
+            
+            if (reservations.length === 0) {
+                container.innerHTML = '<p>Aucune réservation récente</p>';
+                return;
+            }
+            
+            const html = `
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Client</th>
+                            <th>Voiture</th>
+                            <th>Date</th>
+                            <th>Prix</th>
+                            <th>Statut</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${reservations.map(reservation => `
+                            <tr>
+                                <td>${reservation.user.first_name} ${reservation.user.last_name}</td>
+                                <td>${reservation.car.brand} ${reservation.car.model}</td>
+                                <td>${new Date(reservation.start_date).toLocaleDateString('fr-FR')}</td>
+                                <td>${reservation.total_price}€</td>
+                                <td><span class="status-badge status-${reservation.status}">${reservation.status}</span></td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+            
+            container.innerHTML = html;
+        }
+        
+        // Charger les données des voitures
+        async function loadCarsData() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/cars/`);
+                const cars = await response.json();
+                
+                const container = document.getElementById('cars-list');
+                const html = `
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Marque</th>
+                                <th>Modèle</th>
+                                <th>Prix/jour</th>
+                                <th>Disponible</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${cars.map(car => `
+                                <tr>
+                                    <td>${car.brand}</td>
+                                    <td>${car.model}</td>
+                                    <td>${car.price_per_day}€</td>
+                                    <td>${car.available ? 'Oui' : 'Non'}</td>
+                                    <td>
+                                        <button class="action-btn btn-edit" onclick="editCar(${car.id})">Modifier</button>
+                                        <button class="action-btn btn-delete" onclick="deleteCar(${car.id})">Supprimer</button>
+                                    </td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                `;
+                
+                container.innerHTML = html;
+                
+            } catch (error) {
+                console.error('Erreur lors du chargement des voitures:', error);
+            }
+        }
+        
+        // Charger les données des réservations
+        async function loadReservationsData() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/reservations/`);
+                const reservations = await response.json();
+                
+                const container = document.getElementById('reservations-list');
+                const html = `
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Client</th>
+                                <th>Voiture</th>
+                                <th>Agence départ</th>
+                                <th>Date début</th>
+                                <th>Prix total</th>
+                                <th>Statut</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${reservations.map(reservation => `
+                                <tr>
+                                    <td>${reservation.user.first_name} ${reservation.user.last_name}</td>
+                                    <td>${reservation.car.brand} ${reservation.car.model}</td>
+                                    <td>${reservation.agency_start.name}</td>
+                                    <td>${new Date(reservation.start_date).toLocaleDateString('fr-FR')}</td>
+                                    <td>${reservation.total_price}€</td>
+                                    <td><span class="status-badge status-${reservation.status}">${reservation.status}</span></td>
+                                    <td>
+                                        <button class="action-btn btn-view" onclick="viewReservation(${reservation.id})">Voir</button>
+                                        <button class="action-btn btn-edit" onclick="editReservation(${reservation.id})">Modifier</button>
+                                    </td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                `;
+                
+                container.innerHTML = html;
+                
+            } catch (error) {
+                console.error('Erreur lors du chargement des réservations:', error);
+            }
+        }
+        
+        // Charger les données des agences
+        async function loadAgenciesData() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/agencies/`);
+                const agencies = await response.json();
+                
+                const container = document.getElementById('agencies-list');
+                const html = `
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Nom</th>
+                                <th>Ville</th>
+                                <th>Adresse</th>
+                                <th>Téléphone</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${agencies.map(agency => `
+                                <tr>
+                                    <td>${agency.name}</td>
+                                    <td>${agency.city}</td>
+                                    <td>${agency.address}</td>
+                                    <td>${agency.phone}</td>
+                                    <td>
+                                        <button class="action-btn btn-edit" onclick="editAgency(${agency.id})">Modifier</button>
+                                        <button class="action-btn btn-delete" onclick="deleteAgency(${agency.id})">Supprimer</button>
+                                    </td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                `;
+                
+                container.innerHTML = html;
+                
+            } catch (error) {
+                console.error('Erreur lors du chargement des agences:', error);
+            }
+        }
+        
+        // Charger les données des utilisateurs
+        async function loadUsersData() {
+            try {
+                const response = await fetch('/api/admin/users/');
+                const users = await response.json();
+                
+                const container = document.getElementById('users-list');
+                const html = `
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Nom</th>
+                                <th>Email</th>
+                                <th>Date d'inscription</th>
+                                <th>Statut</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${users.map(user => `
+                                <tr>
+                                    <td>${user.first_name} ${user.last_name}</td>
+                                    <td>${user.email}</td>
+                                    <td>${new Date(user.date_joined).toLocaleDateString('fr-FR')}</td>
+                                    <td>${user.is_active ? 'Actif' : 'Inactif'}</td>
+                                    <td>
+                                        <button class="action-btn btn-edit" onclick="editUser(${user.id})">Modifier</button>
+                                        <button class="action-btn btn-delete" onclick="deleteUser(${user.id})">Supprimer</button>
+                                    </td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                `;
+                
+                container.innerHTML = html;
+                
+            } catch (error) {
+                console.error('Erreur lors du chargement des utilisateurs:', error);
+            }
+        }
+        
+        // Charger les données des services
+        async function loadServicesData() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/services/`);
+                const services = await response.json();
+                
+                const container = document.getElementById('services-list');
+                const html = `
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Nom</th>
+                                <th>Description</th>
+                                <th>Prix</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${services.map(service => `
+                                <tr>
+                                    <td>${service.name}</td>
+                                    <td>${service.description}</td>
+                                    <td>${service.price}€</td>
+                                    <td>
+                                        <button class="action-btn btn-edit" onclick="editService(${service.id})">Modifier</button>
+                                        <button class="action-btn btn-delete" onclick="deleteService(${service.id})">Supprimer</button>
+                                    </td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                `;
+                
+                container.innerHTML = html;
+                
+            } catch (error) {
+                console.error('Erreur lors du chargement des services:', error);
+            }
+        }
+        
+        // Fonction de déconnexion
+        function logout() {
+            localStorage.removeItem('user');
+            localStorage.removeItem('isLoggedIn');
+            localStorage.removeItem('token');
+            window.location.href = '/';
+        }
+        
+        // Initialisation
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAdminAuth();
+            loadOverviewData();
+        });
+        
+        // Fonctions pour les modals (à implémenter)
+        function showAddCarModal() {
+            alert('Fonctionnalité à implémenter');
+        }
+        
+        function showAddAgencyModal() {
+            alert('Fonctionnalité à implémenter');
+        }
+        
+        function showAddServiceModal() {
+            alert('Fonctionnalité à implémenter');
+        }
+        
+        function editCar(id) {
+            alert(`Modifier la voiture ${id}`);
+        }
+        
+        function deleteCar(id) {
+            if (confirm('Êtes-vous sûr de vouloir supprimer cette voiture ?')) {
+                alert(`Supprimer la voiture ${id}`);
+            }
+        }
+        
+        function viewReservation(id) {
+            alert(`Voir la réservation ${id}`);
+        }
+        
+        function editReservation(id) {
+            alert(`Modifier la réservation ${id}`);
+        }
+        
+        function editAgency(id) {
+            alert(`Modifier l'agence ${id}`);
+        }
+        
+        function deleteAgency(id) {
+            if (confirm('Êtes-vous sûr de vouloir supprimer cette agence ?')) {
+                alert(`Supprimer l'agence ${id}`);
+            }
+        }
+        
+        function editUser(id) {
+            alert(`Modifier l'utilisateur ${id}`);
+        }
+        
+        function deleteUser(id) {
+            if (confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ?')) {
+                alert(`Supprimer l'utilisateur ${id}`);
+            }
+        }
+        
+        function editService(id) {
+            alert(`Modifier le service ${id}`);
+        }
+        
+        function deleteService(id) {
+            if (confirm('Êtes-vous sûr de vouloir supprimer ce service ?')) {
+                alert(`Supprimer le service ${id}`);
+            }
+        }
+    </script>
+</body>
+</html> 

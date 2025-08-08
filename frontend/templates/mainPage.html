@@ -19,7 +19,8 @@
                 <li><a href="#services">Services</a></li>
                 <li><a href="#catalogue">Catalogue</a></li>
                 <li><a href="#contact">Contact</a></li>
-                <li><button class="btn-login">Connexion</button></li>
+                <li><button class="btn-login" onclick="checkAuthAndRedirect()">Connexion</button></li>
+                <li id="admin-link" style="display: none;"><a href="/dashboard/" style="color: #FF6600; font-weight: 600;">Dashboard Admin</a></li>
             </ul>
         </div>
     </nav>
@@ -139,5 +140,44 @@
     </footer>
 
     <script src="../static/js/main.js"></script>
+    <script>
+        // Vérifier l'authentification et rediriger
+        function checkAuthAndRedirect() {
+            const isLoggedIn = localStorage.getItem('isLoggedIn');
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            
+            if (isLoggedIn === 'true' && user.id) {
+                if (user.is_staff) {
+                    // Si c'est un admin, afficher le lien vers le dashboard
+                    document.getElementById('admin-link').style.display = 'inline-block';
+                    const loginBtn = document.querySelector('.btn-login');
+                    loginBtn.textContent = `Bonjour ${user.first_name || user.username}`;
+                    loginBtn.onclick = () => window.location.href = '/profile/';
+                } else {
+                    // Si c'est un utilisateur normal, aller au profil
+                    window.location.href = '/profile/';
+                }
+            } else {
+                // Si pas connecté, aller à la page de connexion
+                window.location.href = '/login/';
+            }
+        }
+        
+        // Vérifier l'authentification au chargement de la page
+        document.addEventListener('DOMContentLoaded', function() {
+            const isLoggedIn = localStorage.getItem('isLoggedIn');
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            
+            if (isLoggedIn === 'true' && user.id) {
+                const loginBtn = document.querySelector('.btn-login');
+                loginBtn.textContent = `Bonjour ${user.first_name || user.username}`;
+                loginBtn.onclick = () => window.location.href = '/profile/';
+                
+                if (user.is_staff) {
+                    document.getElementById('admin-link').style.display = 'inline-block';
+                }
+            }
+        });
+    </script>
 </body>
 </html> 

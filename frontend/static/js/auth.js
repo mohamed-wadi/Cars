@@ -2,6 +2,7 @@
 document.addEventListener('DOMContentLoaded', function() {
     initAuthTabs();
     initAuthForms();
+    checkAuthStatus();
 });
 
 // Gestion des onglets (Connexion/Inscription)
@@ -38,6 +39,25 @@ function initAuthForms() {
     }
 }
 
+// Vérifier le statut d'authentification
+function checkAuthStatus() {
+    const isLoggedIn = localStorage.getItem('isLoggedIn');
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    
+    if (isLoggedIn === 'true' && user.id) {
+        updateNavbarForLoggedInUser(user);
+    }
+}
+
+// Mettre à jour la navbar pour l'utilisateur connecté
+function updateNavbarForLoggedInUser(user) {
+    const loginBtn = document.querySelector('.btn-login');
+    if (loginBtn) {
+        loginBtn.textContent = `Bonjour ${user.first_name || user.username}`;
+        loginBtn.onclick = () => window.location.href = '/profile/';
+    }
+}
+
 // Gestion de la connexion
 async function handleLogin(e) {
     e.preventDefault();
@@ -57,21 +77,38 @@ async function handleLogin(e) {
     submitBtn.disabled = true;
     
     try {
-        // Simulation de connexion (remplacer par un vrai endpoint API)
-        const response = await simulateLogin(loginData);
+        // Appel à l'API Django pour la connexion
+        const response = await fetch('/api/auth/login/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCSRFToken()
+            },
+            body: JSON.stringify({
+                username: loginData.email,
+                password: loginData.password
+            })
+        });
         
-        if (response.success) {
+        const data = await response.json();
+        
+        if (response.ok && data.success) {
             showSuccess('Connexion réussie ! Redirection...');
+            
             // Stocker les informations utilisateur
-            localStorage.setItem('user', JSON.stringify(response.user));
+            localStorage.setItem('user', JSON.stringify(data.user));
             localStorage.setItem('isLoggedIn', 'true');
+            localStorage.setItem('token', data.token);
+            
+            // Mettre à jour la navbar
+            updateNavbarForLoggedInUser(data.user);
             
             // Redirection vers la page d'accueil
             setTimeout(() => {
                 window.location.href = '/';
             }, 1500);
         } else {
-            showError(response.message);
+            showError(data.message || 'Email ou mot de passe incorrect');
         }
         
     } catch (error) {
@@ -103,10 +140,25 @@ async function handleRegister(e) {
     submitBtn.disabled = true;
     
     try {
-        // Simulation d'inscription (remplacer par un vrai endpoint API)
-        const response = await simulateRegister(registerData);
+        // Appel à l'API Django pour l'inscription
+        const response = await fetch('/api/auth/register/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCSRFToken()
+            },
+            body: JSON.stringify({
+                username: registerData.email,
+                email: registerData.email,
+                password: registerData.password,
+                first_name: registerData.firstname,
+                last_name: registerData.lastname
+            })
+        });
         
-        if (response.success) {
+        const data = await response.json();
+        
+        if (response.ok && data.success) {
             showSuccess('Inscription réussie ! Vous pouvez maintenant vous connecter.');
             e.target.reset();
             
@@ -114,7 +166,7 @@ async function handleRegister(e) {
             document.querySelector('[data-tab="login"]').click();
             
         } else {
-            showError(response.message);
+            showError(data.message || 'Erreur lors de l\'inscription');
         }
         
     } catch (error) {
@@ -189,47 +241,10 @@ function isValidEmail(email) {
     return emailRegex.test(email);
 }
 
-// Simulation de connexion
-function simulateLogin(data) {
-    return new Promise((resolve) => {
-        setTimeout(() => {
-            // Simulation d'une connexion réussie
-            if (data.email === 'admin@aymencars.com' && data.password === 'admin123') {
-                resolve({
-                    success: true,
-                    user: {
-                        id: 1,
-                        email: data.email,
-                        first_name: 'Admin',
-                        last_name: 'User'
-                    }
-                });
-            } else {
-                resolve({
-                    success: false,
-                    message: 'Email ou mot de passe incorrect'
-                });
-            }
-        }, 1500);
-    });
-}
-
-// Simulation d'inscription
-function simulateRegister(data) {
-    return new Promise((resolve) => {
-        setTimeout(() => {
-            // Simulation d'une inscription réussie
-            resolve({
-                success: true,
-                user: {
-                    id: Math.floor(Math.random() * 1000),
-                    email: data.email,
-                    first_name: data.firstname,
-                    last_name: data.lastname
-                }
-            });
-        }, 1500);
-    });
+// Obtenir le token CSRF
+function getCSRFToken() {
+    const token = document.querySelector('meta[name="csrf-token"]');
+    return token ? token.getAttribute('content') : '';
 }
 
 // Fonction pour afficher les messages de succès
@@ -287,6 +302,14 @@ function showError(message) {
             errorDiv.remove();
         }, 300);
     }, 5000);
+}
+
+// Fonction de déconnexion
+function logout() {
+    localStorage.removeItem('user');
+    localStorage.removeItem('isLoggedIn');
+    localStorage.removeItem('token');
+    window.location.href = '/';
 }
 
 // Animations CSS pour les notifications

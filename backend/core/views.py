@@ -7,6 +7,10 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.db.models import Q
 from datetime import datetime, timedelta
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
+from django.http import JsonResponse
+import json
 from .models import Car, Service, Reservation, Agency
 from .serializers import CarSerializer, ServiceSerializer, ReservationSerializer, AgencySerializer
 
@@ -23,6 +27,136 @@ def profile_page(request):
     if not request.user.is_authenticated:
         return redirect('/login')
     return render(request, 'profile.html')
+
+def dashboard_page(request):
+    if not request.user.is_authenticated or not request.user.is_staff:
+        return redirect('/login')
+    return render(request, 'dashboard.html')
+
+@csrf_exempt
+def auth_login(request):
+    """API endpoint pour la connexion"""
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            username = data.get('username')
+            password = data.get('password')
+            
+            user = authenticate(request, username=username, password=password)
+            
+            if user is not None:
+                login(request, user)
+                return JsonResponse({
+                    'success': True,
+                    'user': {
+                        'id': user.id,
+                        'username': user.username,
+                        'email': user.email,
+                        'first_name': user.first_name,
+                        'last_name': user.last_name,
+                        'is_staff': user.is_staff,
+                        'is_superuser': user.is_superuser
+                    },
+                    'token': 'dummy_token'  # En production, utilisez JWT
+                })
+            else:
+                return JsonResponse({
+                    'success': False,
+                    'message': 'Email ou mot de passe incorrect'
+                }, status=400)
+                
+        except Exception as e:
+            return JsonResponse({
+                'success': False,
+                'message': 'Erreur lors de la connexion'
+            }, status=500)
+    
+    return JsonResponse({'error': 'Méthode non autorisée'}, status=405)
+
+@csrf_exempt
+def auth_register(request):
+    """API endpoint pour l'inscription"""
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            username = data.get('username')
+            email = data.get('email')
+            password = data.get('password')
+            first_name = data.get('first_name', '')
+            last_name = data.get('last_name', '')
+            
+            # Vérifier si l'utilisateur existe déjà
+            if User.objects.filter(username=username).exists():
+                return JsonResponse({
+                    'success': False,
+                    'message': 'Un utilisateur avec cet email existe déjà'
+                }, status=400)
+            
+            # Créer le nouvel utilisateur
+            user = User.objects.create_user(
+                username=username,
+                email=email,
+                password=password,
+                first_name=first_name,
+                last_name=last_name
+            )
+            
+            return JsonResponse({
+                'success': True,
+                'user': {
+                    'id': user.id,
+                    'username': user.username,
+                    'email': user.email,
+                    'first_name': user.first_name,
+                    'last_name': user.last_name
+                }
+            })
+            
+        except Exception as e:
+            return JsonResponse({
+                'success': False,
+                'message': 'Erreur lors de l\'inscription'
+            }, status=500)
+    
+    return JsonResponse({'error': 'Méthode non autorisée'}, status=405)
+
+@csrf_exempt
+def auth_logout(request):
+    """API endpoint pour la déconnexion"""
+    if request.method == 'POST':
+        logout(request)
+        return JsonResponse({'success': True})
+    
+    return JsonResponse({'error': 'Méthode non autorisée'}, status=405)
+
+@csrf_exempt
+def admin_users(request):
+    """API endpoint pour récupérer tous les utilisateurs (admin)"""
+    if request.method == 'GET':
+        try:
+            users = User.objects.all()
+            users_data = []
+            
+            for user in users:
+                users_data.append({
+                    'id': user.id,
+                    'username': user.username,
+                    'email': user.email,
+                    'first_name': user.first_name,
+                    'last_name': user.last_name,
+                    'is_active': user.is_active,
+                    'is_staff': user.is_staff,
+                    'date_joined': user.date_joined.isoformat()
+                })
+            
+            return JsonResponse(users_data, safe=False)
+            
+        except Exception as e:
+            return JsonResponse({
+                'error': 'Erreur lors de la récupération des utilisateurs'
+            }, status=500)
+    
+    return JsonResponse({'error': 'Méthode non autorisée'}, status=405)
 
 class CarViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Car.objects.filter(available=True)
