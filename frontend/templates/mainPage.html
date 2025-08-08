@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aymen Car's - Location de Voitures</title>
+    <link rel="stylesheet" href="../static/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <h2>Aymen Car's</h2>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="#home">Accueil</a></li>
+                <li><a href="#services">Services</a></li>
+                <li><a href="#catalogue">Catalogue</a></li>
+                <li><a href="#contact">Contact</a></li>
+                <li><button class="btn-login">Connexion</button></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Bloc Héroïque -->
+    <section id="home" class="hero">
+        <div class="hero-content">
+            <h1>Location de Voitures Premium</h1>
+            <p>Découvrez notre flotte de véhicules et profitez d'une expérience de location exceptionnelle</p>
+            <button class="btn-primary" onclick="scrollToCatalogue()">Réserver Maintenant</button>
+        </div>
+        <div class="hero-overlay"></div>
+    </section>
+
+    <!-- Formulaire de réservation/filtrage -->
+    <section class="reservation-filter">
+        <div class="container">
+            <form id="filter-form" class="filter-form">
+                <div class="filter-row">
+                    <div class="filter-group">
+                        <label for="agency-start">Agence de départ</label>
+                        <select id="agency-start" name="agency_start" required>
+                            <option value="">Chargement...</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="agency-end">Agence de retour</label>
+                        <select id="agency-end" name="agency_end" required>
+                            <option value="">Chargement...</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="filter-row">
+                    <div class="filter-group">
+                        <label for="date-start">Date de départ</label>
+                        <input type="date" id="date-start" name="start_date" required>
+                    </div>
+                    <div class="filter-group">
+                        <label for="time-start">Heure</label>
+                        <input type="time" id="time-start" name="start_time" required>
+                    </div>
+                    <div class="filter-group">
+                        <label for="date-end">Date de retour</label>
+                        <input type="date" id="date-end" name="end_date" required>
+                    </div>
+                    <div class="filter-group">
+                        <label for="time-end">Heure</label>
+                        <input type="time" id="time-end" name="end_time" required>
+                    </div>
+                </div>
+                <div class="filter-row">
+                    <div class="filter-group">
+                        <label for="promo-code">Code promo</label>
+                        <input type="text" id="promo-code" name="promo_code" placeholder="(optionnel)">
+                    </div>
+                    <div class="filter-group">
+                        <label for="age">Mon âge</label>
+                        <input type="number" id="age" name="driver_age" min="18" max="99" required>
+                    </div>
+                    <div class="filter-group">
+                        <button type="submit" class="btn-primary" style="margin-top: 2rem;">Rechercher</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <!-- Bloc Services -->
+    <section id="services" class="services">
+        <div class="container">
+            <h2 class="section-title">Nos Services</h2>
+            <div class="services-grid">
+                <div class="service-card">
+                    <div class="service-icon">🚗</div>
+                    <h3>Flexibilité Totale</h3>
+                    <p>Location à la journée, semaine ou mois selon vos besoins</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">🛡️</div>
+                    <h3>Assurance Complète</h3>
+                    <p>Protection maximale incluse dans tous nos forfaits</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">🏠</div>
+                    <h3>Livraison à Domicile</h3>
+                    <p>Nous livrons votre véhicule directement chez vous</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Bloc Catalogue -->
+    <section id="catalogue" class="catalogue">
+        <div class="container">
+            <h2 class="section-title">Notre Catalogue</h2>
+            <div class="catalogue-grid" id="cars-container">
+                <!-- Les voitures seront chargées dynamiquement via JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Aymen Car's</h3>
+                    <p>Votre partenaire de confiance pour la location de voitures</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Contact</h4>
+                    <p>📧 contact@aymencars.com</p>
+                    <p>📞 +33 1 23 45 67 89</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../static/js/main.js"></script>
+</body>
+</html> 
