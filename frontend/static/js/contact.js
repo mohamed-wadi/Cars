@@ -29,15 +29,35 @@ async function handleContactSubmit(e) {
     submitBtn.disabled = true;
     
     try {
-        // Simulation d'envoi (remplacer par un vrai endpoint API)
-        await simulateContactSubmission(formObject);
+        // Construction du payload attendu par l'API
+        const payload = {
+            name: `${formObject.firstname} ${formObject.lastname}`.trim(),
+            email: formObject.email,
+            phone: formObject.phone || '',
+            subject: formObject.subject,
+            message: formObject.message
+        };
         
-        // Succès
-        showSuccess('Votre message a été envoyé avec succès ! Nous vous répondrons dans les plus brefs délais.');
-        e.target.reset();
+        const res = await fetch('/api/contact/submit/', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' }, // endpoint CSRF-exempt côté serveur
+            body: JSON.stringify(payload),
+            credentials: 'same-origin'
+        });
+        
+        if (!res.ok) {
+            throw new Error('Erreur API');
+        }
+        
+        const data = await res.json();
+        if (data && data.success) {
+            showSuccess('Votre message a été envoyé avec succès !');
+            e.target.reset();
+        } else {
+            throw new Error('Réponse invalide');
+        }
         
     } catch (error) {
-        // Erreur
         showError('Erreur lors de l\'envoi du message. Veuillez réessayer.');
         console.error('Erreur contact:', error);
         
@@ -52,66 +72,33 @@ async function handleContactSubmit(e) {
 function validateContactForm(data) {
     const errors = [];
     
-    // Validation du prénom
     if (!data.firstname || data.firstname.trim().length < 2) {
         errors.push('Le prénom doit contenir au moins 2 caractères');
     }
-    
-    // Validation du nom
     if (!data.lastname || data.lastname.trim().length < 2) {
         errors.push('Le nom doit contenir au moins 2 caractères');
     }
-    
-    // Validation de l'email
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!data.email || !emailRegex.test(data.email)) {
         errors.push('Veuillez entrer une adresse email valide');
     }
-    
-    // Validation du sujet
     if (!data.subject) {
         errors.push('Veuillez sélectionner un sujet');
     }
-    
-    // Validation du message
     if (!data.message || data.message.trim().length < 10) {
         errors.push('Le message doit contenir au moins 10 caractères');
     }
     
-    // Afficher les erreurs s'il y en a
     if (errors.length > 0) {
         showError(errors.join('\n'));
         return false;
     }
-    
     return true;
-}
-
-// Simulation d'envoi du formulaire de contact
-function simulateContactSubmission(data) {
-    return new Promise((resolve, reject) => {
-        // Simuler un délai réseau
-        setTimeout(() => {
-            // Simuler un succès (90% de chance)
-            if (Math.random() > 0.1) {
-                resolve({
-                    success: true,
-                    message: 'Message envoyé avec succès'
-                });
-            } else {
-                reject(new Error('Erreur de connexion'));
-            }
-        }, 1500);
-    });
 }
 
 // Animation des éléments de contact
 function initContactAnimations() {
-    const observerOptions = {
-        threshold: 0.1,
-        rootMargin: '0px 0px -50px 0px'
-    };
-    
+    const observerOptions = { threshold: 0.1, rootMargin: '0px 0px -50px 0px' };
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
@@ -120,8 +107,6 @@ function initContactAnimations() {
             }
         });
     }, observerOptions);
-    
-    // Observer les éléments de contact
     const contactElements = document.querySelectorAll('.info-item, .contact-form-container');
     contactElements.forEach((element, index) => {
         element.style.opacity = '0';
@@ -131,86 +116,38 @@ function initContactAnimations() {
     });
 }
 
-// Fonction pour afficher les messages de succès
+// Notifications (succès/erreur)
 function showSuccess(message) {
     const successDiv = document.createElement('div');
     successDiv.style.cssText = `
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        background: #00C851;
-        color: white;
-        padding: 1rem 1.5rem;
-        border-radius: 8px;
-        z-index: 10001;
-        max-width: 400px;
-        box-shadow: 0 4px 12px rgba(0, 200, 81, 0.3);
-        animation: slideInRight 0.3s ease-out;
-    `;
+        position: fixed; top: 20px; right: 20px; background: #00C851; color: white;
+        padding: 1rem 1.5rem; border-radius: 8px; z-index: 10001; max-width: 400px;
+        box-shadow: 0 4px 12px rgba(0, 200, 81, 0.3); animation: slideInRight 0.3s ease-out;`;
     successDiv.textContent = message;
-    
     document.body.appendChild(successDiv);
-    
     setTimeout(() => {
         successDiv.style.animation = 'slideOutRight 0.3s ease-out';
-        setTimeout(() => {
-            successDiv.remove();
-        }, 300);
-    }, 5000);
+        setTimeout(() => { successDiv.remove(); }, 300);
+    }, 3000);
 }
-
-// Fonction pour afficher les messages d'erreur
 function showError(message) {
     const errorDiv = document.createElement('div');
     errorDiv.style.cssText = `
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        background: #ff4444;
-        color: white;
-        padding: 1rem 1.5rem;
-        border-radius: 8px;
-        z-index: 10001;
-        max-width: 400px;
-        box-shadow: 0 4px 12px rgba(255, 68, 68, 0.3);
-        animation: slideInRight 0.3s ease-out;
-        white-space: pre-line;
-    `;
+        position: fixed; top: 20px; right: 20px; background: #ff4444; color: white;
+        padding: 1rem 1.5rem; border-radius: 8px; z-index: 10001; max-width: 400px;
+        box-shadow: 0 4px 12px rgba(255, 68, 68, 0.3); animation: slideInRight 0.3s ease-out; white-space: pre-line;`;
     errorDiv.textContent = message;
-    
     document.body.appendChild(errorDiv);
-    
     setTimeout(() => {
         errorDiv.style.animation = 'slideOutRight 0.3s ease-out';
-        setTimeout(() => {
-            errorDiv.remove();
-        }, 300);
+        setTimeout(() => { errorDiv.remove(); }, 300);
     }, 5000);
 }
 
 // Animations CSS pour les notifications
 const style = document.createElement('style');
 style.textContent = `
-    @keyframes slideInRight {
-        from {
-            opacity: 0;
-            transform: translateX(100%);
-        }
-        to {
-            opacity: 1;
-            transform: translateX(0);
-        }
-    }
-    
-    @keyframes slideOutRight {
-        from {
-            opacity: 1;
-            transform: translateX(0);
-        }
-        to {
-            opacity: 0;
-            transform: translateX(100%);
-        }
-    }
+    @keyframes slideInRight { from { opacity: 0; transform: translateX(100%);} to { opacity: 1; transform: translateX(0);} }
+    @keyframes slideOutRight { from { opacity: 1; transform: translateX(0);} to { opacity: 0; transform: translateX(100%);} }
 `;
 document.head.appendChild(style); 

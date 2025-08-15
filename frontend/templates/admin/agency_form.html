@@ -1,0 +1,41 @@
+{% extends 'admin/base_admin.html' %}
+{% block content %}
+<h3>{% if mode == 'create' %}Ajouter{% else %}Modifier{% endif %} une agence</h3>
+<form method="post">
+  {% csrf_token %}
+  <div class="row">
+    <div>
+      <label>Nom</label>
+      {{ form.name }}
+    </div>
+    <div>
+      <label>Ville</label>
+      {{ form.city }}
+    </div>
+    <div>
+      <label>Pays</label>
+      {{ form.country }}
+    </div>
+    <div>
+      <label>Téléphone</label>
+      {{ form.phone }}
+    </div>
+    <div>
+      <label>Email</label>
+      {{ form.email }}
+    </div>
+    <div style="grid-column:1 / -1">
+      <label>Adresse</label>
+      {{ form.address }}
+    </div>
+    <div>
+      <label>Horaires</label>
+      {{ form.opening_hours }}
+    </div>
+  </div>
+  <div style="margin-top:1rem" class="actions">
+    <button class="btn" type="submit">Enregistrer</button>
+    <a class="btn secondary" href="/manage/agencies/">Annuler</a>
+  </div>
+</form>
+{% endblock %} 

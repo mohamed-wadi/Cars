@@ -1,0 +1,29 @@
+{% extends 'admin/base_admin.html' %}
+{% block content %}
+<h3>{% if mode == 'create' %}Ajouter{% else %}Modifier{% endif %} un service</h3>
+<form method="post">
+  {% csrf_token %}
+  <div class="row">
+    <div>
+      <label>Nom</label>
+      {{ form.name }}
+    </div>
+    <div>
+      <label>Prix</label>
+      {{ form.price }}
+    </div>
+    <div style="grid-column:1 / -1">
+      <label>Description</label>
+      {{ form.description }}
+    </div>
+    <div>
+      <label>Actif</label>
+      {{ form.is_active }}
+    </div>
+  </div>
+  <div style="margin-top:1rem" class="actions">
+    <button class="btn" type="submit">Enregistrer</button>
+    <a class="btn secondary" href="/manage/services/">Annuler</a>
+  </div>
+</form>
+{% endblock %} 

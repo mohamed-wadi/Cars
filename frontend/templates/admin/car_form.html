@@ -1,0 +1,57 @@
+{% extends 'admin/base_admin.html' %}
+{% block content %}
+<h3>{% if mode == 'create' %}Ajouter{% else %}Modifier{% endif %} une voiture</h3>
+<form method="post" enctype="multipart/form-data">
+  {% csrf_token %}
+  <div class="row">
+    <div>
+      <label>Marque</label>
+      {{ form.brand }}
+    </div>
+    <div>
+      <label>Modèle</label>
+      {{ form.model }}
+    </div>
+    <div>
+      <label>Prix/jour</label>
+      {{ form.price_per_day }}
+    </div>
+    <div>
+      <label>Année</label>
+      {{ form.year }}
+    </div>
+    <div>
+      <label>Kilométrage</label>
+      {{ form.mileage }}
+    </div>
+    <div>
+      <label>Carburant</label>
+      {{ form.fuel_type }}
+    </div>
+    <div>
+      <label>Transmission</label>
+      {{ form.transmission }}
+    </div>
+    <div>
+      <label>Places</label>
+      {{ form.seats }}
+    </div>
+    <div style="grid-column:1 / -1">
+      <label>Description</label>
+      {{ form.description }}
+    </div>
+    <div>
+      <label>Disponible</label>
+      {{ form.available }}
+    </div>
+    <div>
+      <label>Image</label>
+      {{ form.image }}
+    </div>
+  </div>
+  <div style="margin-top:1rem" class="actions">
+    <button class="btn" type="submit">Enregistrer</button>
+    <a class="btn secondary" href="/manage/cars/">Annuler</a>
+  </div>
+</form>
+{% endblock %} 

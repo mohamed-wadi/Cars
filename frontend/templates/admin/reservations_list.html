@@ -1,0 +1,34 @@
+{% extends 'admin/base_admin.html' %}
+{% block content %}
+<h3>Réservations</h3>
+<table>
+  <thead>
+    <tr>
+      <th>Client</th>
+      <th>Voiture</th>
+      <th>Départ</th>
+      <th>Début</th>
+      <th>Prix</th>
+      <th>Statut</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for r in reservations %}
+    <tr>
+      <td>{{ r.user.first_name }} {{ r.user.last_name }}</td>
+      <td>{{ r.car.brand }} {{ r.car.model }}</td>
+      <td>{{ r.agency_start.name }}</td>
+      <td>{{ r.start_date }}</td>
+      <td>{{ r.total_price }}€</td>
+      <td>{{ r.status }}</td>
+      <td class="actions">
+        <a class="btn secondary" href="/manage/reservations/{{ r.id }}/status/">Modifier statut</a>
+      </td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="7">Aucune réservation.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %} 

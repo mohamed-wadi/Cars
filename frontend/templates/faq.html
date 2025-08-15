@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAQ - Questions Fréquentes - Location de Voitures</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <style>
+        .faq-container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 40px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .faq-header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #007bff;
+        }
+        
+        .faq-title {
+            color: #007bff;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .faq-subtitle {
+            color: #666;
+            font-size: 1.1rem;
+        }
+        
+        .faq-item {
+            margin-bottom: 20px;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .faq-question {
+            background-color: #f8f9fa;
+            padding: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            color: #333;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background-color 0.3s ease;
+        }
+        
+        .faq-question:hover {
+            background-color: #e9ecef;
+        }
+        
+        .faq-question.active {
+            background-color: #007bff;
+            color: white;
+        }
+        
+        .faq-toggle {
+            font-size: 1.2rem;
+            transition: transform 0.3s ease;
+        }
+        
+        .faq-toggle.active {
+            transform: rotate(180deg);
+        }
+        
+        .faq-answer {
+            padding: 0 20px;
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            background-color: white;
+        }
+        
+        .faq-answer.active {
+            padding: 20px;
+            max-height: 500px;
+        }
+        
+        .faq-answer p {
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+        
+        .faq-answer ul {
+            color: #555;
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+        
+        .faq-answer li {
+            margin-bottom: 5px;
+        }
+        
+        .contact-section {
+            background-color: #f8f9fa;
+            padding: 30px;
+            border-radius: 8px;
+            margin-top: 40px;
+            text-align: center;
+        }
+        
+        .contact-title {
+            color: #333;
+            margin-bottom: 15px;
+        }
+        
+        .contact-text {
+            color: #666;
+            margin-bottom: 20px;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+            margin: 0 10px;
+        }
+        
+        .btn:hover {
+            background-color: #0056b3;
+        }
+        
+        .btn-secondary {
+            background-color: #6c757d;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #545b62;
+        }
+    </style>
+</head>
+<body>
+    <div class="faq-container">
+        <div class="faq-header">
+            <h1 class="faq-title">Questions Fréquentes</h1>
+            <p class="faq-subtitle">Trouvez rapidement les réponses à vos questions</p>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFaq(this)">
+                <span>Comment puis-je réserver une voiture?</span>
+                <span class="faq-toggle">▼</span>
+            </div>
+            <div class="faq-answer">
+                <p>Pour réserver une voiture, suivez ces étapes simples:</p>
+                <ul>
+                    <li>Créez un compte ou connectez-vous</li>
+                    <li>Sélectionnez vos dates de location</li>
+                    <li>Choisissez le véhicule qui vous convient</li>
+                    <li>Ajoutez des services supplémentaires si souhaité</li>
+                    <li>Procédez au paiement sécurisé via PayPal</li>
+                    <li>Recevez votre confirmation par email</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFaq(this)">
+                <span>Quels sont les documents nécessaires pour la location?</span>
+                <span class="faq-toggle">▼</span>
+            </div>
+            <div class="faq-answer">
+                <p>Vous devez présenter les documents suivants:</p>
+                <ul>
+                    <li>Permis de conduire valide (minimum 2 ans d'ancienneté)</li>
+                    <li>Pièce d'identité officielle (carte d'identité ou passeport)</li>
+                    <li>Carte de crédit au nom du conducteur principal</li>
+                </ul>
+                <p>Tous les documents doivent être en cours de validité.</p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFaq(this)">
+                <span>Puis-je annuler ma réservation?</span>
+                <span class="faq-toggle">▼</span>
+            </div>
+            <div class="faq-answer">
+                <p>Oui, vous pouvez annuler votre réservation selon les conditions suivantes:</p>
+                <ul>
+                    <li><strong>Plus de 24h avant:</strong> Annulation gratuite</li>
+                    <li><strong>Moins de 24h avant:</strong> 50% du montant total</li>
+                    <li><strong>Non-présentation:</strong> 100% du montant total</li>
+                </ul>
+                <p>L'annulation peut être effectuée depuis votre profil utilisateur.</p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFaq(this)">
+                <span>Quel est l'âge minimum pour louer une voiture?</span>
+                <span class="faq-toggle">▼</span>
+            </div>
+            <div class="faq-answer">
+                <p>L'âge minimum pour louer une voiture est de 21 ans. De plus, vous devez posséder un permis de conduire valide depuis au moins 2 ans.</p>
+                <p>Des frais supplémentaires peuvent s'appliquer pour les conducteurs de moins de 25 ans.</p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFaq(this)">
+                <span>Comment fonctionne l'assurance?</span>
+                <span class="faq-toggle">▼</span>
+            </div>
+            <div class="faq-answer">
+                <p>Tous nos véhicules incluent une assurance de base qui couvre:</p>
+                <ul>
+                    <li>Responsabilité civile</li>
+                    <li>Vol et incendie</li>
+                    <li>Dommages collision (avec franchise)</li>
+                </ul>
+                <p>Des options d'assurance complémentaire sont disponibles pour réduire la franchise.</p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFaq(this)">
+                <span>Que se passe-t-il en cas d'accident?</span>
+                <span class="faq-toggle">▼</span>
+            </div>
+            <div class="faq-answer">
+                <p>En cas d'accident, suivez cette procédure:</p>
+                <ul>
+                    <li>Assurez-vous que personne n'est blessé</li>
+                    <li>Contactez immédiatement les services d'urgence si nécessaire</li>
+                    <li>Appelez notre service client 24h/24</li>
+                    <li>Remplissez un constat amiable</li>
+                    <li>Prenez des photos des dommages</li>
+                    <li>Ne reconnaissez jamais votre responsabilité</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFaq(this)">
+                <span>Puis-je modifier ma réservation?</span>
+                <span class="faq-toggle">▼</span>
+            </div>
+            <div class="faq-answer">
+                <p>Oui, vous pouvez modifier votre réservation sous réserve de disponibilité. Les modifications possibles incluent:</p>
+                <ul>
+                    <li>Changement de dates</li>
+                    <li>Changement de véhicule</li>
+                    <li>Ajout ou suppression de services</li>
+                </ul>
+                <p>Des frais supplémentaires peuvent s'appliquer selon les modifications demandées.</p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFaq(this)">
+                <span>Quels moyens de paiement acceptez-vous?</span>
+                <span class="faq-toggle">▼</span>
+            </div>
+            <div class="faq-answer">
+                <p>Nous acceptons les paiements via PayPal, qui vous permet d'utiliser:</p>
+                <ul>
+                    <li>Votre compte PayPal</li>
+                    <li>Cartes de crédit (Visa, MasterCard, American Express)</li>
+                    <li>Cartes de débit</li>
+                </ul>
+                <p>Tous les paiements sont sécurisés et cryptés.</p>
+            </div>
+        </div>
+
+        <div class="contact-section">
+            <h3 class="contact-title">Vous ne trouvez pas la réponse à votre question?</h3>
+            <p class="contact-text">Notre équipe de support est là pour vous aider!</p>
+            <a href="/contact/" class="btn">Nous contacter</a>
+            <a href="/" class="btn btn-secondary">Retour à l'accueil</a>
+        </div>
+    </div>
+
+    <script>
+        function toggleFaq(element) {
+            const answer = element.nextElementSibling;
+            const toggle = element.querySelector('.faq-toggle');
+            
+            // Close all other FAQ items
+            document.querySelectorAll('.faq-question').forEach(q => {
+                if (q !== element) {
+                    q.classList.remove('active');
+                    q.nextElementSibling.classList.remove('active');
+                    q.querySelector('.faq-toggle').classList.remove('active');
+                }
+            });
+            
+            // Toggle current item
+            element.classList.toggle('active');
+            answer.classList.toggle('active');
+            toggle.classList.toggle('active');
+        }
+    </script>
+</body>
+</html>

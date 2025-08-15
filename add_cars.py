@@ -1,166 +1,181 @@
 import os
 import sys
 import django
-import requests
-from pathlib import Path
 
 # Configuration Django
-sys.path.append(str(Path(__file__).parent / 'backend'))
+sys.path.append('backend')
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'backend.settings')
 django.setup()
 
 from core.models import Car
+import requests
+from io import BytesIO
+from django.core.files import File
 
-# URLs des images de voitures (Unsplash - libres de droits)
-car_images = [
+# Données des voitures
+cars_data = [
     {
-        'url': 'https://images.unsplash.com/photo-1555215695-3004980ad54e?w=800&h=600&fit=crop',
-        'filename': 'bmw_x5.jpg',
         'brand': 'BMW',
         'model': 'X5',
-        'price': 120.00,
-        'description': 'SUV de luxe BMW X5, parfait pour les familles et les voyages.'
+        'price_per_day': 120.00,
+        'description': 'SUV luxueux avec toutes les options modernes',
+        'year': 2022,
+        'mileage': 15000,
+        'fuel_type': 'hybrid',
+        'transmission': 'automatic',
+        'seats': 5
     },
     {
-        'url': 'https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=800&h=600&fit=crop',
-        'filename': 'mercedes_c200.jpg',
         'brand': 'Mercedes',
         'model': 'Classe C 200',
-        'price': 95.00,
-        'description': 'Berline élégante Mercedes Classe C, confort et style garantis.'
+        'price_per_day': 95.00,
+        'description': 'Berline élégante et confortable',
+        'year': 2023,
+        'mileage': 8000,
+        'fuel_type': 'essence',
+        'transmission': 'automatic',
+        'seats': 5
     },
     {
-        'url': 'https://images.unsplash.com/photo-1614200187524-dc4b892acf16?w=800&h=600&fit=crop',
-        'filename': 'audi_a4.jpg',
         'brand': 'Audi',
         'model': 'A4',
-        'price': 85.00,
-        'description': 'Audi A4, performance et technologie allemande.'
+        'price_per_day': 85.00,
+        'description': 'Berline sportive avec finition premium',
+        'year': 2022,
+        'mileage': 12000,
+        'fuel_type': 'diesel',
+        'transmission': 'manual',
+        'seats': 5
     },
     {
-        'url': 'https://images.unsplash.com/photo-1614200187524-dc4b892acf16?w=800&h=600&fit=crop',
-        'filename': 'volkswagen_golf.jpg',
         'brand': 'Volkswagen',
         'model': 'Golf',
-        'price': 65.00,
-        'description': 'Volkswagen Golf, polyvalente et économique.'
+        'price_per_day': 65.00,
+        'description': 'Compacte polyvalente et économique',
+        'year': 2021,
+        'mileage': 25000,
+        'fuel_type': 'essence',
+        'transmission': 'manual',
+        'seats': 5
     },
     {
-        'url': 'https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=800&h=600&fit=crop',
-        'filename': 'peugeot_3008.jpg',
         'brand': 'Peugeot',
         'model': '3008',
-        'price': 75.00,
-        'description': 'SUV Peugeot 3008, design moderne et spacieux.'
+        'price_per_day': 75.00,
+        'description': 'SUV moderne avec design innovant',
+        'year': 2023,
+        'mileage': 5000,
+        'fuel_type': 'hybrid',
+        'transmission': 'automatic',
+        'seats': 5
     },
     {
-        'url': 'https://images.unsplash.com/photo-1555215695-3004980ad54e?w=800&h=600&fit=crop',
-        'filename': 'renault_clio.jpg',
         'brand': 'Renault',
         'model': 'Clio',
-        'price': 45.00,
-        'description': 'Citadine Renault Clio, parfaite pour la ville.'
+        'price_per_day': 45.00,
+        'description': 'Citadine parfaite pour la ville',
+        'year': 2022,
+        'mileage': 18000,
+        'fuel_type': 'essence',
+        'transmission': 'manual',
+        'seats': 5
     },
     {
-        'url': 'https://images.unsplash.com/photo-1614200187524-dc4b892acf16?w=800&h=600&fit=crop',
-        'filename': 'toyota_corolla.jpg',
+        'brand': 'Tesla',
+        'model': 'Model 3',
+        'price_per_day': 130.00,
+        'description': 'Voiture électrique haute performance',
+        'year': 2023,
+        'mileage': 3000,
+        'fuel_type': 'electric',
+        'transmission': 'automatic',
+        'seats': 5
+    },
+    {
         'brand': 'Toyota',
-        'model': 'Corolla',
-        'price': 55.00,
-        'description': 'Toyota Corolla, fiabilité japonaise reconnue.'
+        'model': 'Yaris',
+        'price_per_day': 50.00,
+        'description': 'Compacte hybride économique',
+        'year': 2022,
+        'mileage': 15000,
+        'fuel_type': 'hybrid',
+        'transmission': 'automatic',
+        'seats': 5
     },
     {
-        'url': 'https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=800&h=600&fit=crop',
-        'filename': 'honda_civic.jpg',
-        'brand': 'Honda',
-        'model': 'Civic',
-        'price': 60.00,
-        'description': 'Honda Civic, sportive et économique.'
-    },
-    {
-        'url': 'https://images.unsplash.com/photo-1555215695-3004980ad54e?w=800&h=600&fit=crop',
-        'filename': 'ford_focus.jpg',
         'brand': 'Ford',
         'model': 'Focus',
-        'price': 50.00,
-        'description': 'Ford Focus, conduite dynamique et confortable.'
+        'price_per_day': 60.00,
+        'description': 'Berline familiale fiable',
+        'year': 2021,
+        'mileage': 22000,
+        'fuel_type': 'diesel',
+        'transmission': 'manual',
+        'seats': 5
     },
     {
-        'url': 'https://images.unsplash.com/photo-1614200187524-dc4b892acf16?w=800&h=600&fit=crop',
-        'filename': 'citroen_c3.jpg',
         'brand': 'Citroën',
         'model': 'C3',
-        'price': 40.00,
-        'description': 'Citroën C3, design unique et confort optimal.'
+        'price_per_day': 55.00,
+        'description': 'Citadine avec design unique',
+        'year': 2023,
+        'mileage': 7000,
+        'fuel_type': 'essence',
+        'transmission': 'manual',
+        'seats': 5
     }
 ]
 
-def download_image(url, filename):
-    """Télécharge une image depuis une URL"""
+def download_image(brand, model):
+    """Télécharger une image depuis Unsplash"""
     try:
+        query = f"{brand} {model} car"
+        url = f"https://source.unsplash.com/800x600/?{query}"
         response = requests.get(url, timeout=10)
-        response.raise_for_status()
-        
-        # Chemin vers le dossier media/cars
-        media_path = Path(__file__).parent / 'media' / 'cars'
-        media_path.mkdir(parents=True, exist_ok=True)
-        
-        file_path = media_path / filename
-        with open(file_path, 'wb') as f:
-            f.write(response.content)
-        
-        print(f"✅ Image téléchargée: {filename}")
-        return f'cars/{filename}'
-    except Exception as e:
-        print(f"❌ Erreur téléchargement {filename}: {e}")
-        return None
+        if response.status_code == 200:
+            return BytesIO(response.content)
+    except:
+        pass
+    return None
 
-def add_cars_to_database():
-    """Ajoute les voitures à la base de données"""
-    print("🚗 Ajout des voitures à la base de données...")
+def add_cars():
+    """Ajouter les voitures à la base de données"""
+    print("🚗 Ajout des voitures...")
     
-    for i, car_data in enumerate(car_images, 1):
-        print(f"\n--- Voiture {i}/10 ---")
+    for i, car_data in enumerate(cars_data):
+        # Vérifier si la voiture existe déjà
+        existing_car = Car.objects.filter(
+            brand=car_data['brand'],
+            model=car_data['model']
+        ).first()
         
-        # Télécharger l'image
-        image_path = download_image(car_data['url'], car_data['filename'])
+        if existing_car:
+            print(f"⚠️  {car_data['brand']} {car_data['model']} existe déjà")
+            continue
         
-        # Créer la voiture dans la base de données
-        try:
-            car = Car.objects.create(
-                brand=car_data['brand'],
-                model=car_data['model'],
-                price_per_day=car_data['price'],
-                description=car_data['description'],
-                available=True
-            )
-            
-            # Si l'image a été téléchargée, l'assigner
-            if image_path:
-                car.image = image_path
-                car.save()
-            
-            print(f"✅ {car_data['brand']} {car_data['model']} ajoutée (€{car_data['price']}/jour)")
-            
-        except Exception as e:
-            print(f"❌ Erreur ajout {car_data['brand']} {car_data['model']}: {e}")
+        # Créer la voiture
+        car = Car.objects.create(
+            brand=car_data['brand'],
+            model=car_data['model'],
+            price_per_day=car_data['price_per_day'],
+            description=car_data['description'],
+            year=car_data['year'],
+            mileage=car_data['mileage'],
+            fuel_type=car_data['fuel_type'],
+            transmission=car_data['transmission'],
+            seats=car_data['seats'],
+            available=True
+        )
+        
+        # Télécharger et ajouter l'image
+        image_data = download_image(car_data['brand'], car_data['model'])
+        if image_data:
+            filename = f"{car_data['brand'].lower()}_{car_data['model'].lower().replace(' ', '_')}.jpg"
+            car.image.save(filename, File(image_data), save=True)
+        
+        print(f"✅ {car_data['brand']} {car_data['model']} ajoutée")
+    
+    print(f"\n🎉 {Car.objects.count()} voitures disponibles dans la base de données")
 
 if __name__ == "__main__":
-    print("🎯 Script d'ajout de voitures Aymen Car's")
-    print("=" * 50)
-    
-    # Vérifier si des voitures existent déjà
-    existing_cars = Car.objects.count()
-    if existing_cars > 0:
-        print(f"⚠️  {existing_cars} voiture(s) existent déjà dans la base de données.")
-        response = input("Voulez-vous continuer et ajouter 10 nouvelles voitures ? (o/n): ")
-        if response.lower() not in ['o', 'oui', 'y', 'yes']:
-            print("❌ Opération annulée.")
-            sys.exit(0)
-    
-    add_cars_to_database()
-    print("\n" + "=" * 50)
-    print("🎉 Script terminé !")
-    print(f"📊 Total voitures en base: {Car.objects.count()}")
-    print("🌐 Accédez à http://127.0.0.1:8000/ pour voir le site")
-    print("🔧 Accédez à http://127.0.0.1:8000/admin/ pour gérer les voitures") 
+    add_cars() 

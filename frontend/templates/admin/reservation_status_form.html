@@ -1,0 +1,21 @@
+{% extends 'admin/base_admin.html' %}
+{% block content %}
+<h3>Mettre à jour le statut de la réservation #{{ object.id }}</h3>
+<form method="post">
+  {% csrf_token %}
+  <div class="row">
+    <div>
+      <label>Statut</label>
+      {{ form.status }}
+    </div>
+    <div style="grid-column:1 / -1">
+      <label>Notes</label>
+      {{ form.notes }}
+    </div>
+  </div>
+  <div style="margin-top:1rem" class="actions">
+    <button class="btn" type="submit">Enregistrer</button>
+    <a class="btn secondary" href="/manage/reservations/">Annuler</a>
+  </div>
+</form>
+{% endblock %} 

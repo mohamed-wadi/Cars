@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>À Propos - Location de Voitures</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <style>
+        .about-container {
+            max-width: 1000px;
+            margin: 20px auto;
+            padding: 40px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .about-header {
+            text-align: center;
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #007bff;
+        }
+        
+        .about-title {
+            color: #007bff;
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+        
+        .about-subtitle {
+            color: #666;
+            font-size: 1.2rem;
+            font-style: italic;
+        }
+        
+        .about-section {
+            margin-bottom: 40px;
+        }
+        
+        .section-title {
+            color: #333;
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #dee2e6;
+        }
+        
+        .section-content {
+            color: #555;
+            line-height: 1.7;
+            text-align: justify;
+            font-size: 1.1rem;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            margin: 40px 0;
+        }
+        
+        .stat-item {
+            text-align: center;
+            padding: 30px 20px;
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            border: 2px solid #dee2e6;
+            transition: transform 0.3s ease;
+        }
+        
+        .stat-item:hover {
+            transform: translateY(-5px);
+            border-color: #007bff;
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #007bff;
+            margin-bottom: 10px;
+        }
+        
+        .stat-label {
+            color: #666;
+            font-weight: bold;
+        }
+        
+        .values-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin: 40px 0;
+        }
+        
+        .value-item {
+            padding: 25px;
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            border-left: 4px solid #007bff;
+        }
+        
+        .value-icon {
+            font-size: 2rem;
+            color: #007bff;
+            margin-bottom: 15px;
+        }
+        
+        .value-title {
+            color: #333;
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .value-description {
+            color: #666;
+            line-height: 1.6;
+        }
+        
+        .team-section {
+            background-color: #f8f9fa;
+            padding: 40px;
+            border-radius: 10px;
+            margin: 40px 0;
+        }
+        
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+        
+        .team-member {
+            text-align: center;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .member-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background-color: #007bff;
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        
+        .member-name {
+            color: #333;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .member-role {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .contact-cta {
+            background-color: #007bff;
+            color: white;
+            padding: 40px;
+            border-radius: 10px;
+            text-align: center;
+            margin-top: 40px;
+        }
+        
+        .cta-title {
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+        }
+        
+        .cta-text {
+            font-size: 1.1rem;
+            margin-bottom: 25px;
+            opacity: 0.9;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            margin: 0 10px;
+        }
+        
+        .btn-light {
+            background-color: white;
+            color: #007bff;
+        }
+        
+        .btn-light:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .btn-outline {
+            background-color: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+        
+        .btn-outline:hover {
+            background-color: white;
+            color: #007bff;
+        }
+    </style>
+</head>
+<body>
+    <div class="about-container">
+        <div class="about-header">
+            <h1 class="about-title">À Propos de Nous</h1>
+            <p class="about-subtitle">Votre partenaire de confiance pour la location de véhicules</p>
+        </div>
+
+        <div class="about-section">
+            <h2 class="section-title">Notre Histoire</h2>
+            <div class="section-content">
+                <p>Fondée en 2020, notre entreprise de location de véhicules s'est rapidement imposée comme un acteur majeur du secteur. Née de la passion pour l'automobile et du désir d'offrir un service client exceptionnel, nous avons commencé avec une petite flotte de véhicules et une grande ambition : révolutionner l'expérience de location de voitures.</p>
+                
+                <p>Aujourd'hui, nous sommes fiers de servir des milliers de clients satisfaits à travers le pays, en proposant une gamme diversifiée de véhicules adaptés à tous les besoins et tous les budgets. Notre croissance constante témoigne de la confiance que nos clients nous accordent.</p>
+            </div>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-item">
+                <div class="stat-number">5000+</div>
+                <div class="stat-label">Clients Satisfaits</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">150+</div>
+                <div class="stat-label">Véhicules Disponibles</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">25+</div>
+                <div class="stat-label">Agences Partenaires</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">99%</div>
+                <div class="stat-label">Taux de Satisfaction</div>
+            </div>
+        </div>
+
+        <div class="about-section">
+            <h2 class="section-title">Notre Mission</h2>
+            <div class="section-content">
+                <p>Notre mission est de rendre la location de véhicules simple, accessible et transparente pour tous. Nous croyons que chacun devrait pouvoir accéder facilement à un moyen de transport fiable, que ce soit pour un voyage d'affaires, des vacances en famille ou tout autre besoin de mobilité.</p>
+                
+                <p>Nous nous engageons à maintenir les plus hauts standards de qualité et de service, tout en proposant des tarifs compétitifs et une expérience utilisateur exceptionnelle.</p>
+            </div>
+        </div>
+
+        <div class="values-grid">
+            <div class="value-item">
+                <div class="value-icon">🚗</div>
+                <div class="value-title">Qualité</div>
+                <div class="value-description">Tous nos véhicules sont régulièrement entretenus et inspectés pour garantir votre sécurité et votre confort.</div>
+            </div>
+            <div class="value-item">
+                <div class="value-icon">💰</div>
+                <div class="value-title">Transparence</div>
+                <div class="value-description">Pas de frais cachés. Tous nos tarifs sont clairement affichés et nos conditions sont transparentes.</div>
+            </div>
+            <div class="value-item">
+                <div class="value-icon">⚡</div>
+                <div class="value-title">Rapidité</div>
+                <div class="value-description">Réservation en ligne en quelques clics, prise en charge rapide et processus simplifié.</div>
+            </div>
+            <div class="value-item">
+                <div class="value-icon">🛡️</div>
+                <div class="value-title">Sécurité</div>
+                <div class="value-description">Assurance complète incluse et assistance 24h/24 pour votre tranquillité d'esprit.</div>
+            </div>
+        </div>
+
+        <div class="team-section">
+            <h2 class="section-title" style="text-align: center; color: #333;">Notre Équipe</h2>
+            <p style="text-align: center; color: #666; margin-bottom: 30px;">Des professionnels passionnés à votre service</p>
+            
+            <div class="team-grid">
+                <div class="team-member">
+                    <div class="member-avatar">JD</div>
+                    <div class="member-name">Jean Dupont</div>
+                    <div class="member-role">Directeur Général</div>
+                </div>
+                <div class="team-member">
+                    <div class="member-avatar">ML</div>
+                    <div class="member-name">Marie Leblanc</div>
+                    <div class="member-role">Responsable Flotte</div>
+                </div>
+                <div class="team-member">
+                    <div class="member-avatar">PM</div>
+                    <div class="member-name">Pierre Martin</div>
+                    <div class="member-role">Service Client</div>
+                </div>
+                <div class="team-member">
+                    <div class="member-avatar">SD</div>
+                    <div class="member-name">Sophie Durand</div>
+                    <div class="member-role">Responsable IT</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="about-section">
+            <h2 class="section-title">Nos Engagements</h2>
+            <div class="section-content">
+                <p><strong>Environnement:</strong> Nous nous engageons à réduire notre empreinte carbone en proposant une flotte de véhicules de plus en plus écologique, incluant des véhicules hybrides et électriques.</p>
+                
+                <p><strong>Innovation:</strong> Nous investissons continuellement dans les nouvelles technologies pour améliorer votre expérience, de la réservation en ligne à la gestion de votre location.</p>
+                
+                <p><strong>Communauté:</strong> Nous soutenons les initiatives locales et participons activement au développement économique de notre région.</p>
+            </div>
+        </div>
+
+        <div class="contact-cta">
+            <h3 class="cta-title">Prêt à Commencer Votre Aventure?</h3>
+            <p class="cta-text">Découvrez notre large gamme de véhicules et réservez dès maintenant!</p>
+            <a href="/" class="btn btn-light">Voir nos véhicules</a>
+            <a href="/contact/" class="btn btn-outline">Nous contacter</a>
+        </div>
+    </div>
+</body>
+</html>

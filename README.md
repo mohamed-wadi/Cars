@@ -7,15 +7,18 @@ Un site web moderne et complet de location de voitures développé avec Django (
 ### 🎯 **Pages et Interface**
 - ✅ **Page d'accueil** avec design moderne et responsive
 - ✅ **Page de contact** avec formulaire et carte Google Maps
-- ✅ **Page de connexion/inscription** avec onglets et validation *(en développement)*
+- ✅ **Page de connexion/inscription** complète avec validation
+- ✅ **Page de profil utilisateur** avec gestion des réservations
+- ✅ **Dashboard admin frontend** complet avec tous les CRUD
 - ✅ **Système de navigation** fluide et intuitif
 - ✅ **Design responsive** pour tous les appareils
 
 ### 🚗 **Gestion des Voitures**
-- ✅ **Catalogue dynamique** avec 10 voitures pré-configurées
+- ✅ **Catalogue dynamique** avec 14 voitures pré-configurées
 - ✅ **Images haute qualité** téléchargées automatiquement
 - ✅ **Système de filtrage** par marque, prix, disponibilité
 - ✅ **Recherche avancée** dans le catalogue
+- ✅ **Informations détaillées** : année, kilométrage, carburant, transmission
 
 ### 📅 **Système de Réservation Complet**
 - ✅ **Formulaire de réservation** avec tous les champs nécessaires
@@ -25,27 +28,35 @@ Un site web moderne et complet de location de voitures développé avec Django (
 - ✅ **Codes promo** (exemple: WELCOME10 = 10% de réduction)
 - ✅ **Validation de l'âge** du conducteur
 - ✅ **Gestion des services** additionnels
+- ✅ **Statuts de réservation** (en attente, confirmée, annulée, terminée)
 
 ### 🏢 **Gestion des Agences**
-- ✅ **8 agences** pré-configurées dans toute la France
+- ✅ **15 agences** pré-configurées dans toute la France
 - ✅ **API complète** pour récupérer les agences
 - ✅ **Sélection dynamique** dans les formulaires
+- ✅ **Informations complètes** : adresse, téléphone, email, horaires
 
-### 👤 **Système d'Authentification**
-- ✅ **Admin Django** pour la gestion complète *(interface principale)*
+### 👤 **Système d'Authentification Avancé**
+- ✅ **Rôles utilisateur** : Client et Administrateur
+- ✅ **Inscription clients** uniquement (admins via Django)
+- ✅ **Connexion sécurisée** avec validation
 - ✅ **Gestion des sessions** utilisateur
 - ✅ **Protection des routes** privées
-- ✅ **Interface d'administration** Django complète
+- ✅ **Profils utilisateur** avec informations détaillées
 
-### 🔧 **Backend Django Avancé**
-- ✅ **API REST complète** avec Django REST Framework
-- ✅ **Modèles de données** optimisés
-- ✅ **Calculs automatiques** de prix
-- ✅ **Validation des données** côté serveur
-- ✅ **Gestion des réservations** (création, annulation, historique)
+### 🔧 **Dashboard Admin Frontend Complet**
+- ✅ **Interface moderne** avec sidebar et navigation
+- ✅ **Vue d'ensemble** avec statistiques en temps réel
+- ✅ **Gestion des voitures** (CRUD complet)
+- ✅ **Gestion des réservations** (voir, modifier, annuler)
+- ✅ **Gestion des agences** (CRUD complet)
+- ✅ **Gestion des utilisateurs** (CRUD complet)
+- ✅ **Gestion des services** (CRUD complet)
+- ✅ **Messages de contact** (gestion complète)
+- ✅ **Interface intuitive** avec recherche et filtrage
 
 ### 🎨 **Design et UX**
-- ✅ **Couleurs orange** selon le cahier des charges
+- ✅ **Palette orange** selon le cahier des charges
 - ✅ **Animations fluides** et transitions
 - ✅ **Notifications** de succès/erreur
 - ✅ **Loading states** pour toutes les actions
@@ -81,10 +92,10 @@ aymen_cars/
 │   │   ├── urls.py         # Routes principales
 │   │   └── wsgi.py
 │   ├── core/               # Application principale
-│   │   ├── models.py       # Modèles: Car, Service, Reservation, Agency
+│   │   ├── models.py       # Modèles: Car, Service, Reservation, Agency, UserProfile, Contact
 │   │   ├── views.py        # Vues API et pages
 │   │   ├── serializers.py  # Serializers DRF
-│   │   ├── admin.py        # Admin Django
+│   │   ├── admin.py        # Admin Django avancé
 │   │   └── urls.py         # Routes API
 │   ├── manage.py
 │   └── db.sqlite3          # Base de données
@@ -92,7 +103,9 @@ aymen_cars/
 │   ├── templates/
 │   │   ├── mainPage.html   # Page d'accueil
 │   │   ├── contact.html    # Page de contact
-│   │   └── login.html      # Page d'authentification
+│   │   ├── login.html      # Page d'authentification
+│   │   ├── profile.html    # Page de profil utilisateur
+│   │   └── dashboard.html  # Dashboard admin frontend
 │   └── static/
 │       ├── css/
 │       │   ├── style.css   # Styles principaux
@@ -150,12 +163,12 @@ python manage.py migrate
 
 5. **Créer un superutilisateur**
 ```bash
+cd ..
 python create_admin.py
 ```
 
 6. **Ajouter les données de test**
 ```bash
-cd ..
 python add_cars.py
 python add_agencies.py
 ```
@@ -170,32 +183,48 @@ python manage.py runserver
 
 - **🌐 Site principal** : http://127.0.0.1:8000/
 - **📞 Page contact** : http://127.0.0.1:8000/contact/
-- **🔐 Page connexion** : http://127.0.0.1:8000/login/ *(en développement)*
-- **🔧 Admin Django** : http://127.0.0.1:8000/admin/ *(interface principale)*
+- **🔐 Page connexion** : http://127.0.0.1:8000/login/
+- **👤 Page profil** : http://127.0.0.1:8000/profile/
+- **📊 Dashboard Admin** : http://127.0.0.1:8000/dashboard/
+- **🔧 Admin Django** : http://127.0.0.1:8000/admin/
 - **📡 API Cars** : http://127.0.0.1:8000/api/cars/
 - **📡 API Agencies** : http://127.0.0.1:8000/api/agencies/
 - **📡 API Services** : http://127.0.0.1:8000/api/services/
 - **📡 API Reservations** : http://127.0.0.1:8000/api/reservations/
+- **📡 API Contacts** : http://127.0.0.1:8000/api/contacts/
 
-## 🔧 **Interface d'Administration Django**
+## 🔧 **Interface d'Administration**
 
 ### **Accès Admin**
 - **URL** : http://127.0.0.1:8000/admin/
 - **Username** : admin
 - **Password** : admin123
 
+### **Dashboard Frontend**
+- **URL** : http://127.0.0.1:8000/dashboard/
+- **Username** : admin
+- **Password** : admin123
+
 ### **Fonctionnalités Admin**
 - ✅ **Gestion des voitures** (ajouter, modifier, supprimer)
-- ✅ **Gestion des agences** (8 agences pré-configurées)
+- ✅ **Gestion des agences** (15 agences pré-configurées)
 - ✅ **Gestion des services** (assurance, GPS, etc.)
 - ✅ **Gestion des réservations** (voir toutes les réservations)
 - ✅ **Gestion des utilisateurs** (créer, modifier, supprimer)
+- ✅ **Messages de contact** (gestion complète)
 - ✅ **Interface intuitive** avec recherche et filtrage
 
 ### **Guide d'Utilisation**
 Consultez le fichier `ADMIN_GUIDE.md` pour un guide complet d'utilisation de l'admin Django.
 
 ## 📊 Modèles de Données
+
+### **UserProfile (Profil Utilisateur)**
+- `user` : Relation OneToOne avec User Django
+- `role` : Rôle (client/admin)
+- `phone` : Numéro de téléphone
+- `address` : Adresse complète
+- `birth_date` : Date de naissance
 
 ### **Car (Voiture)**
 - `brand` : Marque du véhicule
@@ -204,6 +233,11 @@ Consultez le fichier `ADMIN_GUIDE.md` pour un guide complet d'utilisation de l'a
 - `image` : Image du véhicule
 - `description` : Description détaillée
 - `available` : Disponibilité
+- `year` : Année du véhicule
+- `mileage` : Kilométrage
+- `fuel_type` : Type de carburant
+- `transmission` : Type de transmission
+- `seats` : Nombre de places
 
 ### **Agency (Agence)**
 - `name` : Nom de l'agence
@@ -211,11 +245,14 @@ Consultez le fichier `ADMIN_GUIDE.md` pour un guide complet d'utilisation de l'a
 - `city` : Ville
 - `country` : Pays
 - `phone` : Numéro de téléphone
+- `email` : Adresse email
+- `opening_hours` : Horaires d'ouverture
 
 ### **Service**
 - `name` : Nom du service
 - `description` : Description du service
 - `price` : Prix du service
+- `is_active` : Service actif
 
 ### **Reservation**
 - `user` : Utilisateur qui réserve
@@ -231,7 +268,20 @@ Consultez le fichier `ADMIN_GUIDE.md` pour un guide complet d'utilisation de l'a
 - `driver_age` : Âge du conducteur
 - `total_price` : Prix total calculé
 - `status` : Statut de la réservation
+- `notes` : Notes additionnelles
 - `created_at` : Date de création
+- `updated_at` : Date de modification
+
+### **Contact**
+- `name` : Nom du contact
+- `email` : Email du contact
+- `phone` : Téléphone
+- `subject` : Sujet du message
+- `message` : Contenu du message
+- `status` : Statut du message
+- `admin_response` : Réponse de l'admin
+- `created_at` : Date de création
+- `updated_at` : Date de modification
 
 ## 🎨 Design et Couleurs
 
@@ -257,10 +307,15 @@ python add_cars.py
 python add_agencies.py
 ```
 
+### **Créer un admin**
+```bash
+python create_admin.py
+```
+
 ### **Via l'admin Django**
 1. Aller sur http://127.0.0.1:8000/admin/
 2. Se connecter avec le superutilisateur
-3. Gérer voitures, agences, services, réservations
+3. Gérer voitures, agences, services, réservations, utilisateurs, contacts
 
 ## 📡 API Endpoints
 
@@ -281,6 +336,17 @@ python add_agencies.py
 - `GET /api/reservations/past/` : Réservations passées
 - `POST /api/reservations/{id}/cancel/` : Annuler une réservation
 
+### **Authentification**
+- `POST /api/auth/login/` : Connexion
+- `POST /api/auth/register/` : Inscription
+- `POST /api/auth/logout/` : Déconnexion
+
+### **Contact**
+- `POST /api/contact/submit/` : Soumettre un message de contact
+
+### **Admin**
+- `GET /api/admin/users/` : Liste des utilisateurs (admin)
+
 ## 🚀 Fonctionnalités Avancées
 
 ### **Système de Réservation**
@@ -296,10 +362,17 @@ python add_agencies.py
 - Filtrage par disponibilité
 - Tri par différents critères
 
-### **Authentification**
-- Admin Django pour la gestion complète
-- Interface intuitive et sécurisée
-- Gestion des permissions utilisateur
+### **Authentification et Rôles**
+- Système de rôles (client/admin)
+- Inscription clients uniquement
+- Admins créés via Django
+- Gestion des sessions sécurisée
+
+### **Dashboard Admin Frontend**
+- Interface moderne et intuitive
+- Gestion complète de tous les éléments
+- Statistiques en temps réel
+- Actions CRUD complètes
 
 ### **Notifications**
 - Messages de succès/erreur
@@ -308,7 +381,6 @@ python add_agencies.py
 
 ## 📝 TODO / Améliorations Futures
 
-- [ ] **Page de connexion** complète (en développement)
 - [ ] **Système de paiement** (Stripe, PayPal)
 - [ ] **Notifications email** automatiques
 - [ ] **Système de notation** et avis
@@ -345,9 +417,11 @@ Le projet Aymen Car's est maintenant **100% fonctionnel** avec toutes les foncti
 ✅ **Backend Django complet** avec API REST  
 ✅ **Frontend moderne** avec toutes les pages  
 ✅ **Système de réservation** avancé  
-✅ **Admin Django** pour la gestion complète  
+✅ **Dashboard admin frontend** complet  
+✅ **Système d'authentification** avec rôles  
 ✅ **Gestion des agences** et voitures  
 ✅ **Design responsive** et professionnel  
 ✅ **Base de données** avec données de test  
+✅ **Interface d'administration** complète  
 
 **Prêt pour la production !** 🚀 

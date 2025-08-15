@@ -18,7 +18,9 @@
                 <li><a href="#home">Accueil</a></li>
                 <li><a href="#services">Services</a></li>
                 <li><a href="#catalogue">Catalogue</a></li>
-                <li><a href="#contact">Contact</a></li>
+                <li><a href="/about/">À Propos</a></li>
+                <li><a href="/faq/">FAQ</a></li>
+                <li><a href="/contact/">Contact</a></li>
                 <li><button class="btn-login" onclick="checkAuthAndRedirect()">Connexion</button></li>
                 <li id="admin-link" style="display: none;"><a href="/dashboard/" style="color: #FF6600; font-weight: 600;">Dashboard Admin</a></li>
             </ul>
@@ -85,6 +87,78 @@
                     </div>
                 </div>
             </form>
+            
+            <!-- Advanced Search Filters -->
+            <div class="advanced-filters" style="margin-top: 2rem; padding: 1.5rem; background: #f8f9fa; border-radius: 10px;">
+                <h3 style="margin-bottom: 1rem; color: #333;">Filtres Avancés</h3>
+                <div class="filter-row">
+                    <div class="filter-group">
+                        <label for="search-query">Recherche par mot-clé</label>
+                        <input type="text" id="search-query" placeholder="Marque, modèle, description...">
+                    </div>
+                    <div class="filter-group">
+                        <label for="brand-filter">Marque</label>
+                        <select id="brand-filter">
+                            <option value="">Toutes les marques</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="fuel-filter">Carburant</label>
+                        <select id="fuel-filter">
+                            <option value="">Tous types</option>
+                            <option value="essence">Essence</option>
+                            <option value="diesel">Diesel</option>
+                            <option value="hybrid">Hybride</option>
+                            <option value="electric">Électrique</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="filter-row">
+                    <div class="filter-group">
+                        <label for="transmission-filter">Transmission</label>
+                        <select id="transmission-filter">
+                            <option value="">Toutes</option>
+                            <option value="manual">Manuelle</option>
+                            <option value="automatic">Automatique</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="min-price">Prix minimum (€/jour)</label>
+                        <input type="number" id="min-price" min="0" placeholder="0">
+                    </div>
+                    <div class="filter-group">
+                        <label for="max-price">Prix maximum (€/jour)</label>
+                        <input type="number" id="max-price" min="0" placeholder="1000">
+                    </div>
+                </div>
+                <div class="filter-row">
+                    <div class="filter-group">
+                        <label for="seats-filter">Nombre de places</label>
+                        <select id="seats-filter">
+                            <option value="">Toutes</option>
+                            <option value="2">2 places</option>
+                            <option value="4">4 places</option>
+                            <option value="5">5 places</option>
+                            <option value="7">7 places</option>
+                            <option value="9">9 places</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="sort-by">Trier par</label>
+                        <select id="sort-by">
+                            <option value="price_asc">Prix croissant</option>
+                            <option value="price_desc">Prix décroissant</option>
+                            <option value="brand">Marque</option>
+                            <option value="year_desc">Année (récent)</option>
+                            <option value="rating">Note client</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <button type="button" class="btn-primary" onclick="applyAdvancedFilters()" style="margin-top: 2rem;">Appliquer les filtres</button>
+                        <button type="button" class="btn" onclick="clearFilters()" style="margin-top: 2rem; background: #6c757d; color: white;">Effacer</button>
+                    </div>
+                </div>
+            </div>
         </div>
     </section>
 
@@ -127,13 +201,19 @@
         <div class="container">
             <div class="footer-content">
                 <div class="footer-section">
-                    <h3>Aymen Car's</h3>
+                    <h3>🚗 Location de Voitures</h3>
                     <p>Votre partenaire de confiance pour la location de voitures</p>
                 </div>
                 <div class="footer-section">
                     <h4>Contact</h4>
-                    <p>📧 contact@aymencars.com</p>
+                    <p>📧 support@location-voitures.com</p>
                     <p>📞 +33 1 23 45 67 89</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Liens Utiles</h4>
+                    <p><a href="/terms/" style="color: #666; text-decoration: none;">Conditions Générales</a></p>
+                    <p><a href="/faq/" style="color: #666; text-decoration: none;">FAQ</a></p>
+                    <p><a href="/about/" style="color: #666; text-decoration: none;">À Propos</a></p>
                 </div>
             </div>
         </div>

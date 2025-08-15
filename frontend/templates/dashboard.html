@@ -13,7 +13,7 @@
         }
         
         .sidebar {
-            width: 250px;
+            width: 280px;
             background: #2c3e50;
             color: white;
             padding: 2rem 0;
@@ -41,6 +41,9 @@
             cursor: pointer;
             transition: background 0.3s ease;
             border-left: 3px solid transparent;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
         }
         
         .menu-item:hover {
@@ -53,14 +56,9 @@
             border-left-color: #FF6600;
         }
         
-        .menu-item i {
-            margin-right: 1rem;
-            width: 20px;
-        }
-        
         .main-content {
             flex: 1;
-            margin-left: 250px;
+            margin-left: 280px;
             padding: 2rem;
             background: #f8f9fa;
         }
@@ -179,6 +177,16 @@
             color: #c62828;
         }
         
+        .status-new {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+        
+        .status-resolved {
+            background: #e8f5e8;
+            color: #2e7d32;
+        }
+        
         .action-btn {
             padding: 0.25rem 0.5rem;
             border: none;
@@ -207,20 +215,42 @@
             display: none;
         }
         
+        /* Modals */
+        .modal-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.45);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        .modal-backdrop.show { display: flex; }
+        .modal {
+            width: 95%;
+            max-width: 720px;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+        .modal-header { padding: 1rem 1.25rem; border-bottom: 1px solid #eee; display:flex; align-items:center; justify-content:space-between; }
+        .modal-title { margin: 0; font-size: 1.1rem; color:#2c3e50; }
+        .modal-close { background: none; border: none; font-size: 1.3rem; cursor: pointer; }
+        .modal-body { padding: 1.25rem; }
+        .modal-footer { padding: 1rem 1.25rem; border-top: 1px solid #eee; display:flex; gap:.5rem; justify-content:flex-end; }
+        .form-grid { display:grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap:1rem; }
+        .form-grid .full { grid-column: 1 / -1; }
+        .form-grid label { display:block; font-weight:600; margin-bottom:.25rem; }
+        .form-grid input, .form-grid select, .form-grid textarea { width:100%; padding:.5rem; border:1px solid #ddd; border-radius:6px; }
+        .notice { margin-top:.5rem; font-size:.9rem; color:#2e7d32; }
+        .error { color:#c62828; }
+        
         @media (max-width: 768px) {
-            .sidebar {
-                width: 100%;
-                position: relative;
-                height: auto;
-            }
-            
-            .main-content {
-                margin-left: 0;
-            }
-            
-            .dashboard-container {
-                flex-direction: column;
-            }
+            .sidebar { width: 100%; position: relative; height: auto; }
+            .main-content { margin-left: 0; }
+            .dashboard-container { flex-direction: column; }
+            .form-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -250,6 +280,9 @@
                 </div>
                 <div class="menu-item" onclick="showSection('services')">
                     ⚙️ Services
+                </div>
+                <div class="menu-item" onclick="showSection('contacts')">
+                    📞 Messages de contact
                 </div>
                 <div class="menu-item" onclick="logout()">
                     🚪 Déconnexion
@@ -297,7 +330,7 @@
             <div id="cars" class="content-section hidden">
                 <h3 class="section-title">
                     Gestion des voitures
-                    <button class="btn-add" onclick="showAddCarModal()">+ Ajouter une voiture</button>
+                    <button class="btn-add" onclick="openCarModal(null)">+ Ajouter une voiture</button>
                 </h3>
                 <div id="cars-list">
                     <p>Chargement...</p>
@@ -316,7 +349,7 @@
             <div id="agencies" class="content-section hidden">
                 <h3 class="section-title">
                     Gestion des agences
-                    <button class="btn-add" onclick="showAddAgencyModal()">+ Ajouter une agence</button>
+                    <button class="btn-add" onclick="openAgencyModal(null)">+ Ajouter une agence</button>
                 </h3>
                 <div id="agencies-list">
                     <p>Chargement...</p>
@@ -335,11 +368,299 @@
             <div id="services" class="content-section hidden">
                 <h3 class="section-title">
                     Gestion des services
-                    <button class="btn-add" onclick="showAddServiceModal()">+ Ajouter un service</button>
+                    <button class="btn-add" onclick="openServiceModal(null)">+ Ajouter un service</button>
                 </h3>
                 <div id="services-list">
                     <p>Chargement...</p>
                 </div>
+            </div>
+
+            <!-- Messages de contact -->
+            <div id="contacts" class="content-section hidden">
+                <h3 class="section-title">Messages de contact</h3>
+                <div id="contacts-list">
+                    <p>Chargement...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <div id="carModal" class="modal-backdrop">
+        <div class="modal">
+            <div class="modal-header">
+                <h4 id="carModalTitle" class="modal-title">Voiture</h4>
+                <button class="modal-close" onclick="closeModal('carModal')">×</button>
+            </div>
+            <form id="carForm" class="modal-body" onsubmit="submitCarForm(event)">
+                <input type="hidden" id="carId" />
+                <div id="carNotice" class="notice hidden"></div>
+                <div class="form-grid">
+                    <div>
+                        <label>Marque</label>
+                        <input id="carBrand" required />
+                    </div>
+                    <div>
+                        <label>Modèle</label>
+                        <input id="carModel" required />
+                    </div>
+                    <div>
+                        <label>Prix/jour (€)</label>
+                        <input id="carPrice" type="number" step="0.01" required />
+                    </div>
+                    <div>
+                        <label>Année</label>
+                        <input id="carYear" type="number" required />
+                    </div>
+                    <div>
+                        <label>Kilométrage</label>
+                        <input id="carMileage" type="number" value="0" />
+                    </div>
+                    <div>
+                        <label>Carburant</label>
+                        <select id="carFuel">
+                            <option value="essence">Essence</option>
+                            <option value="diesel">Diesel</option>
+                            <option value="hybrid">Hybride</option>
+                            <option value="electric">Électrique</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label>Transmission</label>
+                        <select id="carTransmission">
+                            <option value="manual">Manuelle</option>
+                            <option value="automatic">Automatique</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label>Places</label>
+                        <input id="carSeats" type="number" value="5" />
+                    </div>
+                    <div class="full">
+                        <label>Description</label>
+                        <textarea id="carDescription"></textarea>
+                    </div>
+                    <div>
+                        <label>Disponible</label>
+                        <input id="carAvailable" type="checkbox" checked />
+                    </div>
+                    <div>
+                        <label>Image (optionnel)</label>
+                        <input id="carImage" type="file" accept="image/*" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="action-btn" onclick="closeModal('carModal')">Annuler</button>
+                    <button type="submit" class="action-btn btn-edit">Enregistrer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="agencyModal" class="modal-backdrop">
+        <div class="modal">
+            <div class="modal-header">
+                <h4 id="agencyModalTitle" class="modal-title">Agence</h4>
+                <button class="modal-close" onclick="closeModal('agencyModal')">×</button>
+            </div>
+            <form id="agencyForm" class="modal-body" onsubmit="submitAgencyForm(event)">
+                <input type="hidden" id="agencyId" />
+                <div id="agencyNotice" class="notice hidden"></div>
+                <div class="form-grid">
+                    <div>
+                        <label>Nom</label>
+                        <input id="agencyName" required />
+                    </div>
+                    <div>
+                        <label>Ville</label>
+                        <input id="agencyCity" />
+                    </div>
+                    <div class="full">
+                        <label>Adresse</label>
+                        <input id="agencyAddress" />
+                    </div>
+                    <div>
+                        <label>Pays</label>
+                        <input id="agencyCountry" value="France" />
+                    </div>
+                    <div>
+                        <label>Téléphone</label>
+                        <input id="agencyPhone" />
+                    </div>
+                    <div>
+                        <label>Email</label>
+                        <input id="agencyEmail" type="email" />
+                    </div>
+                    <div>
+                        <label>Horaires</label>
+                        <input id="agencyHours" value="8h-18h" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="action-btn" onclick="closeModal('agencyModal')">Annuler</button>
+                    <button type="submit" class="action-btn btn-edit">Enregistrer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="serviceModal" class="modal-backdrop">
+        <div class="modal">
+            <div class="modal-header">
+                <h4 id="serviceModalTitle" class="modal-title">Service</h4>
+                <button class="modal-close" onclick="closeModal('serviceModal')">×</button>
+            </div>
+            <form id="serviceForm" class="modal-body" onsubmit="submitServiceForm(event)">
+                <input type="hidden" id="serviceId" />
+                <div id="serviceNotice" class="notice hidden"></div>
+                <div class="form-grid">
+                    <div>
+                        <label>Nom</label>
+                        <input id="serviceName" required />
+                    </div>
+                    <div>
+                        <label>Prix (€)</label>
+                        <input id="servicePrice" type="number" step="0.01" required />
+                    </div>
+                    <div class="full">
+                        <label>Description</label>
+                        <textarea id="serviceDescription"></textarea>
+                    </div>
+                    <div>
+                        <label>Actif</label>
+                        <input id="serviceActive" type="checkbox" checked />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="action-btn" onclick="closeModal('serviceModal')">Annuler</button>
+                    <button type="submit" class="action-btn btn-edit">Enregistrer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="userModal" class="modal-backdrop">
+        <div class="modal">
+            <div class="modal-header">
+                <h4 class="modal-title">Utilisateur</h4>
+                <button class="modal-close" onclick="closeModal('userModal')">×</button>
+            </div>
+            <form id="userForm" class="modal-body" onsubmit="submitUserForm(event)">
+                <input type="hidden" id="userId" />
+                <div id="userNotice" class="notice hidden"></div>
+                <div class="form-grid">
+                    <div>
+                        <label>Prénom</label>
+                        <input id="userFirstName" />
+                    </div>
+                    <div>
+                        <label>Nom</label>
+                        <input id="userLastName" />
+                    </div>
+                    <div class="full">
+                        <label>Email</label>
+                        <input id="userEmail" type="email" />
+                    </div>
+                    <div>
+                        <label>Actif</label>
+                        <input id="userActive" type="checkbox" />
+                    </div>
+                    <div>
+                        <label>Staff</label>
+                        <input id="userStaff" type="checkbox" />
+                    </div>
+                    <div>
+                        <label>Rôle</label>
+                        <select id="userRole">
+                            <option value="client">client</option>
+                            <option value="admin">admin</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="action-btn" onclick="closeModal('userModal')">Annuler</button>
+                    <button type="submit" class="action-btn btn-edit">Enregistrer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="reservationModal" class="modal-backdrop">
+        <div class="modal">
+            <div class="modal-header">
+                <h4 class="modal-title">Statut de réservation</h4>
+                <button class="modal-close" onclick="closeModal('reservationModal')">×</button>
+            </div>
+            <form id="reservationForm" class="modal-body" onsubmit="submitReservationForm(event)">
+                <input type="hidden" id="reservationId" />
+                <div id="reservationNotice" class="notice hidden"></div>
+                <div class="form-grid">
+                    <div>
+                        <label>Statut</label>
+                        <select id="reservationStatus">
+                            <option value="pending">pending</option>
+                            <option value="confirmed">confirmed</option>
+                            <option value="cancelled">cancelled</option>
+                            <option value="completed">completed</option>
+                        </select>
+                    </div>
+                    <div class="full">
+                        <label>Notes</label>
+                        <textarea id="reservationNotes"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="action-btn" onclick="closeModal('reservationModal')">Annuler</button>
+                    <button type="submit" class="action-btn btn-edit">Enregistrer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="contactModal" class="modal-backdrop">
+        <div class="modal">
+            <div class="modal-header">
+                <h4 class="modal-title">Réponse au message</h4>
+                <button class="modal-close" onclick="closeModal('contactModal')">×</button>
+            </div>
+            <form id="contactForm" class="modal-body" onsubmit="submitContactForm(event)">
+                <input type="hidden" id="contactId" />
+                <div id="contactNotice" class="notice hidden"></div>
+                <div class="form-grid">
+                    <div>
+                        <label>Statut</label>
+                        <select id="contactStatus">
+                            <option value="new">new</option>
+                            <option value="in_progress">in_progress</option>
+                            <option value="resolved">resolved</option>
+                            <option value="closed">closed</option>
+                        </select>
+                    </div>
+                    <div class="full">
+                        <label>Réponse</label>
+                        <textarea id="contactResponse"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="action-btn" onclick="closeModal('contactModal')">Annuler</button>
+                    <button type="submit" class="action-btn btn-edit">Envoyer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="confirmModal" class="modal-backdrop">
+        <div class="modal">
+            <div class="modal-header">
+                <h4 class="modal-title" id="confirmTitle">Confirmer</h4>
+                <button class="modal-close" onclick="closeModal('confirmModal')">×</button>
+            </div>
+            <div class="modal-body">
+                <p id="confirmMessage">Êtes-vous sûr ?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="action-btn" onclick="closeModal('confirmModal')">Annuler</button>
+                <button type="button" class="action-btn btn-delete" id="confirmYesBtn">Confirmer</button>
             </div>
         </div>
     </div>
@@ -348,34 +669,52 @@
         // Configuration de l'API
         const API_BASE_URL = 'http://127.0.0.1:8000/api';
         
+        // Helpers CSRF + fetch
+        function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
+        }
+        const CSRF_TOKEN = getCookie('csrftoken');
+        async function apiFetch(url, options = {}) {
+            const isForm = options && options.body && options.body instanceof FormData;
+            const defaultHeaders = isForm ? { 'X-CSRFToken': CSRF_TOKEN || '' } : {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': CSRF_TOKEN || ''
+            };
+            return fetch(url, {
+                credentials: 'same-origin',
+                headers: { ...defaultHeaders, ...(options.headers || {}) },
+                ...options,
+            });
+        }
+        
+        // UI helpers
+        function showModal(id) { document.getElementById(id).classList.add('show'); }
+        function closeModal(id) { document.getElementById(id).classList.remove('show'); }
+        function setNotice(id, msg, isError=false) {
+            const el = document.getElementById(id);
+            el.textContent = msg;
+            el.classList.remove('hidden');
+            el.classList.toggle('error', !!isError);
+            if (!isError) setTimeout(() => el.classList.add('hidden'), 2000);
+        }
+        
         // Vérifier l'authentification admin
         function checkAdminAuth() {
             const isLoggedIn = localStorage.getItem('isLoggedIn');
             const user = JSON.parse(localStorage.getItem('user') || '{}');
-            
-            if (!isLoggedIn || !user.is_staff) {
-                alert('Accès non autorisé. Redirection vers la page de connexion.');
+            if (!isLoggedIn || user.role !== 'admin') {
                 window.location.href = '/login/';
             }
         }
         
         // Afficher une section
         function showSection(sectionId) {
-            // Masquer toutes les sections
-            document.querySelectorAll('.content-section').forEach(section => {
-                section.classList.add('hidden');
-            });
-            
-            // Afficher la section demandée
+            document.querySelectorAll('.content-section').forEach(section => section.classList.add('hidden'));
             document.getElementById(sectionId).classList.remove('hidden');
-            
-            // Mettre à jour le menu actif
-            document.querySelectorAll('.menu-item').forEach(item => {
-                item.classList.remove('active');
-            });
+            document.querySelectorAll('.menu-item').forEach(item => item.classList.remove('active'));
             event.target.classList.add('active');
-            
-            // Charger les données de la section
             loadSectionData(sectionId);
         }
         
@@ -400,59 +739,39 @@
                 case 'services':
                     loadServicesData();
                     break;
+                case 'contacts':
+                    loadContactsData();
+                    break;
             }
         }
         
-        // Charger les données de la vue d'ensemble
+        // Charger données overview
         async function loadOverviewData() {
             try {
-                const [carsResponse, reservationsResponse, usersResponse] = await Promise.all([
-                    fetch(`${API_BASE_URL}/cars/`),
-                    fetch(`${API_BASE_URL}/reservations/`),
-                    fetch('/api/admin/users/')
+                const [carsResponse, reservationsResponse, usersResponse, contactsResponse] = await Promise.all([
+                    apiFetch(`${API_BASE_URL}/cars/`),
+                    apiFetch(`${API_BASE_URL}/reservations/`),
+                    apiFetch('/api/admin/users/'),
+                    apiFetch(`${API_BASE_URL}/contacts/`)
                 ]);
-                
                 const cars = await carsResponse.json();
                 const reservations = await reservationsResponse.json();
                 const users = await usersResponse.json();
-                
-                // Mettre à jour les statistiques
+                const contacts = await contactsResponse.json();
                 document.getElementById('total-cars').textContent = cars.length;
                 document.getElementById('total-reservations').textContent = reservations.length;
                 document.getElementById('total-users').textContent = users.length;
-                
-                // Calculer les revenus
                 const totalRevenue = reservations.reduce((sum, res) => sum + parseFloat(res.total_price || 0), 0);
                 document.getElementById('total-revenue').textContent = `${totalRevenue.toFixed(2)}€`;
-                
-                // Afficher les réservations récentes
                 displayRecentReservations(reservations.slice(0, 5));
-                
-            } catch (error) {
-                console.error('Erreur lors du chargement des données:', error);
-            }
+            } catch (error) { console.error('Erreur lors du chargement des données:', error); }
         }
-        
-        // Afficher les réservations récentes
         function displayRecentReservations(reservations) {
             const container = document.getElementById('recent-reservations');
-            
-            if (reservations.length === 0) {
-                container.innerHTML = '<p>Aucune réservation récente</p>';
-                return;
-            }
-            
+            if (!reservations || reservations.length === 0) { container.innerHTML = '<p>Aucune réservation récente</p>'; return; }
             const html = `
                 <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>Client</th>
-                            <th>Voiture</th>
-                            <th>Date</th>
-                            <th>Prix</th>
-                            <th>Statut</th>
-                        </tr>
-                    </thead>
+                    <thead><tr><th>Client</th><th>Voiture</th><th>Date</th><th>Prix</th><th>Statut</th></tr></thead>
                     <tbody>
                         ${reservations.map(reservation => `
                             <tr>
@@ -464,28 +783,21 @@
                             </tr>
                         `).join('')}
                     </tbody>
-                </table>
-            `;
-            
+                </table>`;
             container.innerHTML = html;
         }
         
-        // Charger les données des voitures
+        // Voitures
         async function loadCarsData() {
             try {
-                const response = await fetch(`${API_BASE_URL}/cars/`);
+                const response = await apiFetch(`${API_BASE_URL}/cars/`);
                 const cars = await response.json();
-                
                 const container = document.getElementById('cars-list');
                 const html = `
                     <table class="data-table">
                         <thead>
                             <tr>
-                                <th>Marque</th>
-                                <th>Modèle</th>
-                                <th>Prix/jour</th>
-                                <th>Disponible</th>
-                                <th>Actions</th>
+                                <th>Marque</th><th>Modèle</th><th>Prix/jour</th><th>Année</th><th>Carburant</th><th>Disponible</th><th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -494,42 +806,90 @@
                                     <td>${car.brand}</td>
                                     <td>${car.model}</td>
                                     <td>${car.price_per_day}€</td>
+                                    <td>${car.year}</td>
+                                    <td>${car.fuel_type}</td>
                                     <td>${car.available ? 'Oui' : 'Non'}</td>
                                     <td>
-                                        <button class="action-btn btn-edit" onclick="editCar(${car.id})">Modifier</button>
-                                        <button class="action-btn btn-delete" onclick="deleteCar(${car.id})">Supprimer</button>
+                                        <button class="action-btn btn-edit" onclick="openCarModal(${car.id})">Modifier</button>
+                                        <button class="action-btn btn-delete" onclick="confirmDeleteCar(${car.id})">Supprimer</button>
                                     </td>
                                 </tr>
                             `).join('')}
                         </tbody>
-                    </table>
-                `;
-                
+                    </table>`;
                 container.innerHTML = html;
-                
-            } catch (error) {
-                console.error('Erreur lors du chargement des voitures:', error);
+            } catch (error) { console.error('Erreur lors du chargement des voitures:', error); }
+        }
+        async function openCarModal(id) {
+            document.getElementById('carForm').reset();
+            document.getElementById('carId').value = id || '';
+            document.getElementById('carModalTitle').textContent = id ? 'Modifier la voiture' : 'Ajouter une voiture';
+            if (id) {
+                const res = await apiFetch(`${API_BASE_URL}/cars/${id}/`);
+                if (!res.ok) return;
+                const c = await res.json();
+                document.getElementById('carBrand').value = c.brand || '';
+                document.getElementById('carModel').value = c.model || '';
+                document.getElementById('carPrice').value = c.price_per_day || '';
+                document.getElementById('carYear').value = c.year || '';
+                document.getElementById('carMileage').value = c.mileage || 0;
+                document.getElementById('carFuel').value = c.fuel_type || 'essence';
+                document.getElementById('carTransmission').value = c.transmission || 'manual';
+                document.getElementById('carSeats').value = c.seats || 5;
+                document.getElementById('carDescription').value = c.description || '';
+                document.getElementById('carAvailable').checked = !!c.available;
+            }
+            showModal('carModal');
+        }
+        async function submitCarForm(e) {
+            e.preventDefault();
+            const id = document.getElementById('carId').value;
+            const formData = new FormData();
+            formData.append('brand', document.getElementById('carBrand').value);
+            formData.append('model', document.getElementById('carModel').value);
+            formData.append('price_per_day', document.getElementById('carPrice').value);
+            formData.append('year', document.getElementById('carYear').value);
+            formData.append('mileage', document.getElementById('carMileage').value || 0);
+            formData.append('fuel_type', document.getElementById('carFuel').value);
+            formData.append('transmission', document.getElementById('carTransmission').value);
+            formData.append('seats', document.getElementById('carSeats').value || 5);
+            formData.append('description', document.getElementById('carDescription').value || '');
+            formData.append('available', document.getElementById('carAvailable').checked);
+            const file = document.getElementById('carImage').files[0];
+            if (file) formData.append('image', file);
+            const method = id ? 'PUT' : 'POST';
+            const url = id ? `${API_BASE_URL}/cars/${id}/` : `${API_BASE_URL}/cars/`;
+            const res = await apiFetch(url, { method, body: formData });
+            if (res.ok) {
+                setNotice('carNotice', 'Enregistré');
+                closeModal('carModal');
+                loadCarsData();
+                loadOverviewData();
+            } else {
+                setNotice('carNotice', 'Erreur de sauvegarde', true);
             }
         }
-        
-        // Charger les données des réservations
+        function confirmDeleteCar(id) {
+            document.getElementById('confirmMessage').textContent = 'Supprimer cette voiture ?';
+            document.getElementById('confirmYesBtn').onclick = async () => {
+                const res = await apiFetch(`${API_BASE_URL}/cars/${id}/`, { method: 'DELETE' });
+                closeModal('confirmModal');
+                if (res.ok) { loadCarsData(); loadOverviewData(); }
+            };
+            showModal('confirmModal');
+        }
+
+        // Réservations
         async function loadReservationsData() {
             try {
-                const response = await fetch(`${API_BASE_URL}/reservations/`);
+                const response = await apiFetch(`${API_BASE_URL}/reservations/`);
                 const reservations = await response.json();
-                
                 const container = document.getElementById('reservations-list');
                 const html = `
                     <table class="data-table">
                         <thead>
                             <tr>
-                                <th>Client</th>
-                                <th>Voiture</th>
-                                <th>Agence départ</th>
-                                <th>Date début</th>
-                                <th>Prix total</th>
-                                <th>Statut</th>
-                                <th>Actions</th>
+                                <th>Client</th><th>Voiture</th><th>Agence départ</th><th>Date début</th><th>Prix total</th><th>Statut</th><th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -542,38 +902,41 @@
                                     <td>${reservation.total_price}€</td>
                                     <td><span class="status-badge status-${reservation.status}">${reservation.status}</span></td>
                                     <td>
-                                        <button class="action-btn btn-view" onclick="viewReservation(${reservation.id})">Voir</button>
-                                        <button class="action-btn btn-edit" onclick="editReservation(${reservation.id})">Modifier</button>
+                                        <button class="action-btn btn-edit" onclick="openReservationModal(${reservation.id}, '${reservation.status || ''}')">Modifier</button>
                                     </td>
                                 </tr>
                             `).join('')}
                         </tbody>
-                    </table>
-                `;
-                
+                    </table>`;
                 container.innerHTML = html;
-                
-            } catch (error) {
-                console.error('Erreur lors du chargement des réservations:', error);
-            }
+            } catch (error) { console.error('Erreur lors du chargement des réservations:', error); }
         }
-        
-        // Charger les données des agences
+        function openReservationModal(id, status) {
+            document.getElementById('reservationId').value = id;
+            document.getElementById('reservationStatus').value = status || 'pending';
+            showModal('reservationModal');
+        }
+        async function submitReservationForm(e) {
+            e.preventDefault();
+            const id = document.getElementById('reservationId').value;
+            const status = document.getElementById('reservationStatus').value;
+            const notes = document.getElementById('reservationNotes').value;
+            const res = await apiFetch(`${API_BASE_URL}/reservations/${id}/`, { method: 'PATCH', body: JSON.stringify({ status, notes }) });
+            if (res.ok) { closeModal('reservationModal'); loadReservationsData(); loadOverviewData(); }
+            else setNotice('reservationNotice', 'Erreur de mise à jour', true);
+        }
+
+        // Agences
         async function loadAgenciesData() {
             try {
-                const response = await fetch(`${API_BASE_URL}/agencies/`);
+                const response = await apiFetch(`${API_BASE_URL}/agencies/`);
                 const agencies = await response.json();
-                
                 const container = document.getElementById('agencies-list');
                 const html = `
                     <table class="data-table">
                         <thead>
                             <tr>
-                                <th>Nom</th>
-                                <th>Ville</th>
-                                <th>Adresse</th>
-                                <th>Téléphone</th>
-                                <th>Actions</th>
+                                <th>Nom</th><th>Ville</th><th>Adresse</th><th>Téléphone</th><th>Email</th><th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -583,39 +946,75 @@
                                     <td>${agency.city}</td>
                                     <td>${agency.address}</td>
                                     <td>${agency.phone}</td>
+                                    <td>${agency.email || '-'}</td>
                                     <td>
-                                        <button class="action-btn btn-edit" onclick="editAgency(${agency.id})">Modifier</button>
-                                        <button class="action-btn btn-delete" onclick="deleteAgency(${agency.id})">Supprimer</button>
+                                        <button class="action-btn btn-edit" onclick="openAgencyModal(${agency.id})">Modifier</button>
+                                        <button class="action-btn btn-delete" onclick="confirmDeleteAgency(${agency.id})">Supprimer</button>
                                     </td>
                                 </tr>
                             `).join('')}
                         </tbody>
-                    </table>
-                `;
-                
+                    </table>`;
                 container.innerHTML = html;
-                
-            } catch (error) {
-                console.error('Erreur lors du chargement des agences:', error);
-            }
+            } catch (error) { console.error('Erreur lors du chargement des agences:', error); }
         }
-        
-        // Charger les données des utilisateurs
+        async function openAgencyModal(id) {
+            document.getElementById('agencyForm').reset();
+            document.getElementById('agencyId').value = id || '';
+            document.getElementById('agencyModalTitle').textContent = id ? 'Modifier une agence' : 'Ajouter une agence';
+            if (id) {
+                const res = await apiFetch(`${API_BASE_URL}/agencies/${id}/`);
+                if (!res.ok) return;
+                const a = await res.json();
+                document.getElementById('agencyName').value = a.name || '';
+                document.getElementById('agencyCity').value = a.city || '';
+                document.getElementById('agencyAddress').value = a.address || '';
+                document.getElementById('agencyCountry').value = a.country || 'France';
+                document.getElementById('agencyPhone').value = a.phone || '';
+                document.getElementById('agencyEmail').value = a.email || '';
+                document.getElementById('agencyHours').value = a.opening_hours || '8h-18h';
+            }
+            showModal('agencyModal');
+        }
+        async function submitAgencyForm(e) {
+            e.preventDefault();
+            const id = document.getElementById('agencyId').value;
+            const payload = {
+                name: document.getElementById('agencyName').value,
+                city: document.getElementById('agencyCity').value,
+                address: document.getElementById('agencyAddress').value,
+                country: document.getElementById('agencyCountry').value || 'France',
+                phone: document.getElementById('agencyPhone').value,
+                email: document.getElementById('agencyEmail').value || null,
+                opening_hours: document.getElementById('agencyHours').value || '8h-18h',
+            };
+            const method = id ? 'PUT' : 'POST';
+            const url = id ? `${API_BASE_URL}/agencies/${id}/` : `${API_BASE_URL}/agencies/`;
+            const res = await apiFetch(url, { method, body: JSON.stringify(payload) });
+            if (res.ok) { closeModal('agencyModal'); loadAgenciesData(); }
+            else setNotice('agencyNotice', 'Erreur de sauvegarde', true);
+        }
+        function confirmDeleteAgency(id) {
+            document.getElementById('confirmMessage').textContent = 'Supprimer cette agence ?';
+            document.getElementById('confirmYesBtn').onclick = async () => {
+                const res = await apiFetch(`${API_BASE_URL}/agencies/${id}/`, { method: 'DELETE' });
+                closeModal('confirmModal');
+                if (res.ok) loadAgenciesData();
+            };
+            showModal('confirmModal');
+        }
+
+        // Utilisateurs
         async function loadUsersData() {
             try {
-                const response = await fetch('/api/admin/users/');
+                const response = await apiFetch('/api/admin/users/');
                 const users = await response.json();
-                
                 const container = document.getElementById('users-list');
                 const html = `
                     <table class="data-table">
                         <thead>
                             <tr>
-                                <th>Nom</th>
-                                <th>Email</th>
-                                <th>Date d'inscription</th>
-                                <th>Statut</th>
-                                <th>Actions</th>
+                                <th>Nom</th><th>Email</th><th>Rôle</th><th>Date d'inscription</th><th>Statut</th><th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -623,40 +1022,59 @@
                                 <tr>
                                     <td>${user.first_name} ${user.last_name}</td>
                                     <td>${user.email}</td>
+                                    <td><span class="status-badge status-${user.role}">${user.role}</span></td>
                                     <td>${new Date(user.date_joined).toLocaleDateString('fr-FR')}</td>
                                     <td>${user.is_active ? 'Actif' : 'Inactif'}</td>
                                     <td>
-                                        <button class="action-btn btn-edit" onclick="editUser(${user.id})">Modifier</button>
-                                        <button class="action-btn btn-delete" onclick="deleteUser(${user.id})">Supprimer</button>
+                                        <button class="action-btn btn-edit" onclick="openUserModal(${user.id})">Modifier</button>
                                     </td>
                                 </tr>
                             `).join('')}
                         </tbody>
-                    </table>
-                `;
-                
+                    </table>`;
                 container.innerHTML = html;
-                
-            } catch (error) {
-                console.error('Erreur lors du chargement des utilisateurs:', error);
-            }
+            } catch (error) { console.error('Erreur lors du chargement des utilisateurs:', error); }
         }
-        
-        // Charger les données des services
+        async function openUserModal(id) {
+            const res = await apiFetch(`/api/admin/users/${id}/`);
+            if (!res.ok) return;
+            const u = await res.json();
+            document.getElementById('userId').value = u.id;
+            document.getElementById('userFirstName').value = u.first_name || '';
+            document.getElementById('userLastName').value = u.last_name || '';
+            document.getElementById('userEmail').value = u.email || '';
+            document.getElementById('userActive').checked = !!u.is_active;
+            document.getElementById('userStaff').checked = !!u.is_staff;
+            document.getElementById('userRole').value = u.role || 'client';
+            showModal('userModal');
+        }
+        async function submitUserForm(e) {
+            e.preventDefault();
+            const id = document.getElementById('userId').value;
+            const payload = {
+                first_name: document.getElementById('userFirstName').value,
+                last_name: document.getElementById('userLastName').value,
+                email: document.getElementById('userEmail').value,
+                is_active: document.getElementById('userActive').checked,
+                is_staff: document.getElementById('userStaff').checked,
+                role: document.getElementById('userRole').value,
+            };
+            const res = await apiFetch(`/api/admin/users/${id}/`, { method: 'PATCH', body: JSON.stringify(payload) });
+            if (res.ok) { closeModal('userModal'); loadUsersData(); loadOverviewData(); }
+            else setNotice('userNotice', 'Erreur de mise à jour', true);
+        }
+
+        // Services
         async function loadServicesData() {
             try {
-                const response = await fetch(`${API_BASE_URL}/services/`);
+                const response = await apiFetch(`${API_BASE_URL}/services/`);
                 const services = await response.json();
-                
                 const container = document.getElementById('services-list');
                 const html = `
                     <table class="data-table">
                         <thead>
                             <tr>
-                                <th>Nom</th>
-                                <th>Description</th>
-                                <th>Prix</th>
-                                <th>Actions</th>
+                                <th>Nom</th><th>Description</th><th>Prix</th><th>Statut</th><th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -665,24 +1083,108 @@
                                     <td>${service.name}</td>
                                     <td>${service.description}</td>
                                     <td>${service.price}€</td>
+                                    <td>${service.is_active ? 'Actif' : 'Inactif'}</td>
                                     <td>
-                                        <button class="action-btn btn-edit" onclick="editService(${service.id})">Modifier</button>
-                                        <button class="action-btn btn-delete" onclick="deleteService(${service.id})">Supprimer</button>
+                                        <button class="action-btn btn-edit" onclick="openServiceModal(${service.id})">Modifier</button>
+                                        <button class="action-btn btn-delete" onclick="confirmDeleteService(${service.id})">Supprimer</button>
                                     </td>
                                 </tr>
                             `).join('')}
                         </tbody>
-                    </table>
-                `;
-                
+                    </table>`;
                 container.innerHTML = html;
-                
-            } catch (error) {
-                console.error('Erreur lors du chargement des services:', error);
-            }
+            } catch (error) { console.error('Erreur lors du chargement des services:', error); }
         }
-        
-        // Fonction de déconnexion
+        async function openServiceModal(id) {
+            document.getElementById('serviceForm').reset();
+            document.getElementById('serviceId').value = id || '';
+            document.getElementById('serviceModalTitle').textContent = id ? 'Modifier un service' : 'Ajouter un service';
+            if (id) {
+                const res = await apiFetch(`${API_BASE_URL}/services/${id}/`);
+                if (!res.ok) return;
+                const s = await res.json();
+                document.getElementById('serviceName').value = s.name || '';
+                document.getElementById('servicePrice').value = s.price || 0;
+                document.getElementById('serviceDescription').value = s.description || '';
+                document.getElementById('serviceActive').checked = !!s.is_active;
+            }
+            showModal('serviceModal');
+        }
+        async function submitServiceForm(e) {
+            e.preventDefault();
+            const id = document.getElementById('serviceId').value;
+            const payload = {
+                name: document.getElementById('serviceName').value,
+                price: document.getElementById('servicePrice').value,
+                description: document.getElementById('serviceDescription').value,
+                is_active: document.getElementById('serviceActive').checked,
+            };
+            const method = id ? 'PUT' : 'POST';
+            const url = id ? `${API_BASE_URL}/services/${id}/` : `${API_BASE_URL}/services/`;
+            const res = await apiFetch(url, { method, body: JSON.stringify(payload) });
+            if (res.ok) { closeModal('serviceModal'); loadServicesData(); }
+            else setNotice('serviceNotice', 'Erreur de sauvegarde', true);
+        }
+        function confirmDeleteService(id) {
+            document.getElementById('confirmMessage').textContent = 'Supprimer ce service ?';
+            document.getElementById('confirmYesBtn').onclick = async () => {
+                const res = await apiFetch(`${API_BASE_URL}/services/${id}/`, { method: 'DELETE' });
+                closeModal('confirmModal');
+                if (res.ok) loadServicesData();
+            };
+            showModal('confirmModal');
+        }
+
+        // Contacts
+        async function loadContactsData() {
+            try {
+                const response = await apiFetch(`${API_BASE_URL}/contacts/`);
+                const contacts = await response.json();
+                const container = document.getElementById('contacts-list');
+                const html = `
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Nom</th><th>Email</th><th>Sujet</th><th>Statut</th><th>Date</th><th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${contacts.map(contact => `
+                                <tr>
+                                    <td>${contact.name}</td>
+                                    <td>${contact.email}</td>
+                                    <td>${contact.subject}</td>
+                                    <td><span class="status-badge status-${contact.status}">${contact.status}</span></td>
+                                    <td>${new Date(contact.created_at).toLocaleDateString('fr-FR')}</td>
+                                    <td>
+                                        <button class="action-btn btn-edit" onclick="openContactModal(${contact.id}, '${contact.status || 'new'}')">Répondre</button>
+                                    </td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>`;
+                container.innerHTML = html;
+            } catch (error) { console.error('Erreur lors du chargement des contacts:', error); }
+        }
+        async function openContactModal(id, status) {
+            document.getElementById('contactId').value = id;
+            document.getElementById('contactStatus').value = status || 'new';
+            document.getElementById('contactResponse').value = '';
+            showModal('contactModal');
+        }
+        async function submitContactForm(e) {
+            e.preventDefault();
+            const id = document.getElementById('contactId').value;
+            const payload = {
+                status: document.getElementById('contactStatus').value,
+                admin_response: document.getElementById('contactResponse').value,
+            };
+            const res = await apiFetch(`${API_BASE_URL}/contacts/${id}/`, { method: 'PATCH', body: JSON.stringify(payload) });
+            if (res.ok) { closeModal('contactModal'); loadContactsData(); }
+            else setNotice('contactNotice', 'Erreur de mise à jour', true);
+        }
+
+        // Déconnexion
         function logout() {
             localStorage.removeItem('user');
             localStorage.removeItem('isLoggedIn');
@@ -695,67 +1197,6 @@
             checkAdminAuth();
             loadOverviewData();
         });
-        
-        // Fonctions pour les modals (à implémenter)
-        function showAddCarModal() {
-            alert('Fonctionnalité à implémenter');
-        }
-        
-        function showAddAgencyModal() {
-            alert('Fonctionnalité à implémenter');
-        }
-        
-        function showAddServiceModal() {
-            alert('Fonctionnalité à implémenter');
-        }
-        
-        function editCar(id) {
-            alert(`Modifier la voiture ${id}`);
-        }
-        
-        function deleteCar(id) {
-            if (confirm('Êtes-vous sûr de vouloir supprimer cette voiture ?')) {
-                alert(`Supprimer la voiture ${id}`);
-            }
-        }
-        
-        function viewReservation(id) {
-            alert(`Voir la réservation ${id}`);
-        }
-        
-        function editReservation(id) {
-            alert(`Modifier la réservation ${id}`);
-        }
-        
-        function editAgency(id) {
-            alert(`Modifier l'agence ${id}`);
-        }
-        
-        function deleteAgency(id) {
-            if (confirm('Êtes-vous sûr de vouloir supprimer cette agence ?')) {
-                alert(`Supprimer l'agence ${id}`);
-            }
-        }
-        
-        function editUser(id) {
-            alert(`Modifier l'utilisateur ${id}`);
-        }
-        
-        function deleteUser(id) {
-            if (confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ?')) {
-                alert(`Supprimer l'utilisateur ${id}`);
-            }
-        }
-        
-        function editService(id) {
-            alert(`Modifier le service ${id}`);
-        }
-        
-        function deleteService(id) {
-            if (confirm('Êtes-vous sûr de vouloir supprimer ce service ?')) {
-                alert(`Supprimer le service ${id}`);
-            }
-        }
     </script>
 </body>
 </html> 

@@ -1,0 +1,37 @@
+{% extends 'admin/base_admin.html' %}
+{% block content %}
+<h3>Modifier l’utilisateur {{ object.username }}</h3>
+<form method="post">
+  {% csrf_token %}
+  <div class="row">
+    <div>
+      <label>Prénom</label>
+      {{ form.first_name }}
+    </div>
+    <div>
+      <label>Nom</label>
+      {{ form.last_name }}
+    </div>
+    <div>
+      <label>Email</label>
+      {{ form.email }}
+    </div>
+    <div>
+      <label>Actif</label>
+      {{ form.is_active }}
+    </div>
+    <div>
+      <label>Staff</label>
+      {{ form.is_staff }}
+    </div>
+    <div>
+      <label>Rôle</label>
+      {{ form.role }}
+    </div>
+  </div>
+  <div style="margin-top:1rem" class="actions">
+    <button class="btn" type="submit">Enregistrer</button>
+    <a class="btn secondary" href="/manage/users/">Annuler</a>
+  </div>
+</form>
+{% endblock %} 

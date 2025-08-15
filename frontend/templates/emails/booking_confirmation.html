@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirmation de Réservation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        
+        .email-container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header {
+            text-align: center;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #007bff;
+            margin-bottom: 10px;
+        }
+        
+        .title {
+            color: #28a745;
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #666;
+            font-size: 1rem;
+        }
+        
+        .section {
+            margin-bottom: 25px;
+        }
+        
+        .section-title {
+            color: #333;
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #dee2e6;
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .info-item {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            border-left: 3px solid #007bff;
+        }
+        
+        .info-label {
+            font-weight: bold;
+            color: #495057;
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+        
+        .info-value {
+            color: #333;
+            font-size: 1rem;
+        }
+        
+        .car-details {
+            background-color: #e3f2fd;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        
+        .car-name {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #1976d2;
+            margin-bottom: 10px;
+        }
+        
+        .car-specs {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .spec-item {
+            text-align: center;
+            padding: 8px;
+            background-color: white;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+        
+        .price-summary {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .price-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+        }
+        
+        .price-total {
+            border-top: 2px solid #ffc107;
+            padding-top: 10px;
+            font-weight: bold;
+            font-size: 1.2rem;
+            color: #333;
+        }
+        
+        .important-note {
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 0 5px 5px 0;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #dee2e6;
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .contact-info {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+        
+        @media (max-width: 600px) {
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .car-specs {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <div class="header">
+            <div class="logo">🚗 Location de Voitures</div>
+            <h1 class="title">Réservation Confirmée!</h1>
+            <p class="subtitle">Votre véhicule vous attend</p>
+        </div>
+
+        <div class="section">
+            <h2 class="section-title">Détails de votre réservation</h2>
+            <div class="info-grid">
+                <div class="info-item">
+                    <div class="info-label">Numéro de réservation</div>
+                    <div class="info-value">#{{ reservation.id }}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Statut</div>
+                    <div class="info-value" style="color: #28a745; font-weight: bold;">{{ reservation.get_status_display }}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Date de prise en charge</div>
+                    <div class="info-value">{{ reservation.start_date|date:"d/m/Y" }} à {{ reservation.start_time|time:"H:i" }}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Date de retour</div>
+                    <div class="info-value">{{ reservation.end_date|date:"d/m/Y" }} à {{ reservation.end_time|time:"H:i" }}</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2 class="section-title">Votre véhicule</h2>
+            <div class="car-details">
+                <div class="car-name">{{ reservation.car.brand }} {{ reservation.car.model }}</div>
+                <p>{{ reservation.car.description }}</p>
+                
+                <div class="car-specs">
+                    <div class="spec-item">
+                        <strong>Année:</strong><br>{{ reservation.car.year }}
+                    </div>
+                    <div class="spec-item">
+                        <strong>Carburant:</strong><br>{{ reservation.car.get_fuel_type_display }}
+                    </div>
+                    <div class="spec-item">
+                        <strong>Transmission:</strong><br>{{ reservation.car.get_transmission_display }}
+                    </div>
+                    <div class="spec-item">
+                        <strong>Places:</strong><br>{{ reservation.car.seats }} personnes
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2 class="section-title">Agences</h2>
+            <div class="info-grid">
+                <div class="info-item">
+                    <div class="info-label">Prise en charge</div>
+                    <div class="info-value">
+                        <strong>{{ reservation.agency_start.name }}</strong><br>
+                        {{ reservation.agency_start.address }}<br>
+                        {{ reservation.agency_start.city }}<br>
+                        📞 {{ reservation.agency_start.phone }}
+                    </div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Retour</div>
+                    <div class="info-value">
+                        <strong>{{ reservation.agency_end.name }}</strong><br>
+                        {{ reservation.agency_end.address }}<br>
+                        {{ reservation.agency_end.city }}<br>
+                        📞 {{ reservation.agency_end.phone }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% if reservation.services.all %}
+        <div class="section">
+            <h2 class="section-title">Services supplémentaires</h2>
+            <ul>
+                {% for service in reservation.services.all %}
+                <li>{{ service.name }} - {{ service.price }}€</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+
+        <div class="section">
+            <h2 class="section-title">Récapitulatif des prix</h2>
+            <div class="price-summary">
+                <div class="price-row">
+                    <span>Location véhicule:</span>
+                    <span>{{ reservation.car.price_per_day }}€/jour</span>
+                </div>
+                {% for service in reservation.services.all %}
+                <div class="price-row">
+                    <span>{{ service.name }}:</span>
+                    <span>{{ service.price }}€</span>
+                </div>
+                {% endfor %}
+                {% if reservation.promo_code %}
+                <div class="price-row" style="color: #28a745;">
+                    <span>Code promo ({{ reservation.promo_code }}):</span>
+                    <span>-10%</span>
+                </div>
+                {% endif %}
+                <div class="price-row price-total">
+                    <span>Total:</span>
+                    <span>{{ reservation.total_price }}€</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="important-note">
+            <h4>📋 Documents à apporter:</h4>
+            <ul>
+                <li>Permis de conduire valide (minimum 2 ans d'ancienneté)</li>
+                <li>Pièce d'identité officielle</li>
+                <li>Carte de crédit au nom du conducteur principal</li>
+            </ul>
+        </div>
+
+        <div class="contact-info">
+            <h4>Besoin d'aide?</h4>
+            <p>Notre équipe est disponible 24h/24 pour vous assister:</p>
+            <p>📞 <strong>+33 1 23 45 67 89</strong></p>
+            <p>📧 <strong>support@location-voitures.com</strong></p>
+        </div>
+
+        <div class="footer">
+            <p>Merci de votre confiance!</p>
+            <p>L'équipe Location de Voitures</p>
+            <hr style="margin: 20px 0; border: none; border-top: 1px solid #dee2e6;">
+            <p style="font-size: 0.8rem;">
+                Cet email a été envoyé automatiquement, merci de ne pas y répondre.<br>
+                Pour toute question, utilisez nos coordonnées ci-dessus.
+            </p>
+        </div>
+    </div>
+</body>
+</html>

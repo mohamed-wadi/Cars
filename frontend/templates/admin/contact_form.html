@@ -1,0 +1,21 @@
+{% extends 'admin/base_admin.html' %}
+{% block content %}
+<h3>Répondre à {{ object.name }} &lt;{{ object.email }}&gt;</h3>
+<form method="post">
+  {% csrf_token %}
+  <div class="row">
+    <div>
+      <label>Statut</label>
+      {{ form.status }}
+    </div>
+    <div style="grid-column:1 / -1">
+      <label>Réponse</label>
+      {{ form.admin_response }}
+    </div>
+  </div>
+  <div style="margin-top:1rem" class="actions">
+    <button class="btn" type="submit">Envoyer</button>
+    <a class="btn secondary" href="/manage/contacts/">Annuler</a>
+  </div>
+</form>
+{% endblock %} 

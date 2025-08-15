@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conditions Générales - Location de Voitures</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <style>
+        .terms-container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 40px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .terms-header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #007bff;
+        }
+        
+        .terms-title {
+            color: #007bff;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .terms-subtitle {
+            color: #666;
+            font-size: 1.1rem;
+        }
+        
+        .terms-section {
+            margin-bottom: 30px;
+        }
+        
+        .section-title {
+            color: #333;
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #dee2e6;
+        }
+        
+        .section-content {
+            color: #555;
+            line-height: 1.6;
+            text-align: justify;
+        }
+        
+        .section-content ul {
+            margin: 15px 0;
+            padding-left: 20px;
+        }
+        
+        .section-content li {
+            margin-bottom: 8px;
+        }
+        
+        .highlight {
+            background-color: #fff3cd;
+            padding: 15px;
+            border-left: 4px solid #ffc107;
+            margin: 20px 0;
+            border-radius: 0 5px 5px 0;
+        }
+        
+        .back-button {
+            text-align: center;
+            margin-top: 40px;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+        
+        .btn:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="terms-container">
+        <div class="terms-header">
+            <h1 class="terms-title">Conditions Générales d'Utilisation</h1>
+            <p class="terms-subtitle">Dernière mise à jour: {{ current_date|default:"15 août 2025" }}</p>
+        </div>
+
+        <div class="terms-section">
+            <h2 class="section-title">1. Objet et Champ d'Application</h2>
+            <div class="section-content">
+                <p>Les présentes conditions générales d'utilisation (CGU) régissent l'utilisation du service de location de véhicules proposé par notre plateforme. En utilisant nos services, vous acceptez pleinement et sans réserve les présentes conditions.</p>
+            </div>
+        </div>
+
+        <div class="terms-section">
+            <h2 class="section-title">2. Conditions de Location</h2>
+            <div class="section-content">
+                <h4>2.1 Âge et Permis de Conduire</h4>
+                <ul>
+                    <li>L'âge minimum pour louer un véhicule est de 21 ans</li>
+                    <li>Possession d'un permis de conduire valide depuis au moins 2 ans</li>
+                    <li>Présentation obligatoire du permis de conduire original lors de la prise du véhicule</li>
+                </ul>
+                
+                <h4>2.2 Documents Requis</h4>
+                <ul>
+                    <li>Pièce d'identité valide (carte d'identité ou passeport)</li>
+                    <li>Permis de conduire en cours de validité</li>
+                    <li>Carte de crédit au nom du conducteur principal</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="terms-section">
+            <h2 class="section-title">3. Réservation et Paiement</h2>
+            <div class="section-content">
+                <p>Les réservations peuvent être effectuées en ligne via notre plateforme. Le paiement s'effectue de manière sécurisée via PayPal. Une fois la réservation confirmée, vous recevrez un email de confirmation avec tous les détails.</p>
+                
+                <div class="highlight">
+                    <strong>Important:</strong> Les réservations non payées dans les 24 heures seront automatiquement annulées.
+                </div>
+            </div>
+        </div>
+
+        <div class="terms-section">
+            <h2 class="section-title">4. Annulation et Modification</h2>
+            <div class="section-content">
+                <ul>
+                    <li>Annulation gratuite jusqu'à 24 heures avant la prise du véhicule</li>
+                    <li>Annulation moins de 24 heures avant: 50% du montant total</li>
+                    <li>Non-présentation: 100% du montant total</li>
+                    <li>Les modifications sont possibles sous réserve de disponibilité</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="terms-section">
+            <h2 class="section-title">5. Utilisation du Véhicule</h2>
+            <div class="section-content">
+                <h4>5.1 Obligations du Locataire</h4>
+                <ul>
+                    <li>Utiliser le véhicule conformément au code de la route</li>
+                    <li>Ne pas sous-louer ou prêter le véhicule à un tiers</li>
+                    <li>Maintenir le véhicule en bon état</li>
+                    <li>Signaler immédiatement tout accident ou dommage</li>
+                </ul>
+                
+                <h4>5.2 Interdictions</h4>
+                <ul>
+                    <li>Conduite sous l'influence d'alcool ou de drogues</li>
+                    <li>Transport de matières dangereuses</li>
+                    <li>Utilisation du véhicule pour des activités illégales</li>
+                    <li>Dépassement du nombre de kilomètres autorisé (si applicable)</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="terms-section">
+            <h2 class="section-title">6. Assurance et Responsabilité</h2>
+            <div class="section-content">
+                <p>Tous nos véhicules sont assurés selon la législation en vigueur. Le locataire reste responsable des dommages causés par négligence ou non-respect des conditions d'utilisation.</p>
+                
+                <h4>6.1 Franchise</h4>
+                <p>Une franchise s'applique en cas de dommages. Le montant varie selon le type de véhicule et sera précisé lors de la réservation.</p>
+            </div>
+        </div>
+
+        <div class="terms-section">
+            <h2 class="section-title">7. Protection des Données</h2>
+            <div class="section-content">
+                <p>Nous nous engageons à protéger vos données personnelles conformément au RGPD. Vos informations ne seront utilisées que dans le cadre de la prestation de nos services et ne seront jamais vendues à des tiers.</p>
+            </div>
+        </div>
+
+        <div class="terms-section">
+            <h2 class="section-title">8. Contact et Réclamations</h2>
+            <div class="section-content">
+                <p>Pour toute question ou réclamation, vous pouvez nous contacter via:</p>
+                <ul>
+                    <li>Email: support@location-voitures.com</li>
+                    <li>Téléphone: +33 1 23 45 67 89</li>
+                    <li>Formulaire de contact sur notre site web</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="terms-section">
+            <h2 class="section-title">9. Droit Applicable</h2>
+            <div class="section-content">
+                <p>Les présentes conditions générales sont soumises au droit français. Tout litige sera de la compétence exclusive des tribunaux français.</p>
+            </div>
+        </div>
+
+        <div class="back-button">
+            <a href="/" class="btn">Retour à l'accueil</a>
+        </div>
+    </div>
+</body>
+</html>

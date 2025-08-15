@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paiement Annulé - Location de Voitures</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <style>
+        .payment-container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 40px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        
+        .cancel-icon {
+            font-size: 4rem;
+            color: #dc3545;
+            margin-bottom: 20px;
+        }
+        
+        .cancel-title {
+            color: #dc3545;
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+        
+        .cancel-message {
+            font-size: 1.1rem;
+            color: #666;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .btn-primary {
+            background-color: #007bff;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+        
+        .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #545b62;
+        }
+        
+        .btn-warning {
+            background-color: #ffc107;
+            color: #212529;
+        }
+        
+        .btn-warning:hover {
+            background-color: #e0a800;
+        }
+        
+        .info-box {
+            background-color: #d1ecf1;
+            border: 1px solid #bee5eb;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 20px 0;
+            color: #0c5460;
+        }
+        
+        .info-box h4 {
+            margin-top: 0;
+            color: #0c5460;
+        }
+        
+        .info-box ul {
+            text-align: left;
+            margin: 10px 0;
+        }
+        
+        .info-box li {
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="payment-container">
+        <div class="cancel-icon">✗</div>
+        <h1 class="cancel-title">Paiement Annulé</h1>
+        
+        <div class="cancel-message">
+            <p>Votre paiement a été annulé et aucun montant n'a été débité.</p>
+            <p>Votre réservation est toujours en attente de paiement.</p>
+        </div>
+        
+        <div class="info-box">
+            <h4>Que faire maintenant?</h4>
+            <ul>
+                <li>Vous pouvez essayer de payer à nouveau</li>
+                <li>Modifier votre réservation si nécessaire</li>
+                <li>Contacter notre service client pour assistance</li>
+                <li>Votre réservation sera automatiquement annulée après 24h sans paiement</li>
+            </ul>
+        </div>
+        
+        <div class="action-buttons">
+            <a href="/profile/" class="btn btn-warning">Essayer à nouveau</a>
+            <a href="/contact/" class="btn btn-secondary">Contacter le support</a>
+            <a href="/" class="btn btn-primary">Retour à l'accueil</a>
+        </div>
+    </div>
+
+    <script>
+        // Get reservation ID from URL parameters if available
+        const urlParams = new URLSearchParams(window.location.search);
+        const reservationId = urlParams.get('reservation_id');
+        
+        if (reservationId) {
+            console.log('Reservation ID:', reservationId);
+            // You could use this to show specific reservation details
+        }
+        
+        // Auto-redirect after 15 seconds
+        setTimeout(() => {
+            window.location.href = '/profile/';
+        }, 15000);
+    </script>
+</body>
+</html>

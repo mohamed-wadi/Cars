@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin - Aymen Car's</title>
+  <link rel="stylesheet" href="/static/css/style.css" />
+  <style>
+    .container { max-width: 1100px; margin: 2rem auto; padding: 0 1rem; }
+    .topbar { display:flex; align-items:center; justify-content:space-between; margin-bottom: 1rem; }
+    .nav { display:flex; gap: .75rem; flex-wrap: wrap; }
+    .nav a { background:#2c3e50; color:#fff; padding:.5rem .75rem; border-radius:6px; text-decoration:none; }
+    .card { background:#fff; padding:1rem; border-radius:8px; box-shadow:0 2px 10px rgba(0,0,0,.06); }
+    .btn { background:#FF6600; color:#fff; border:none; padding:.5rem .8rem; border-radius:6px; cursor:pointer; text-decoration:none; display:inline-block; }
+    .btn.secondary { background:#3498db; }
+    .btn.danger { background:#e74c3c; }
+    table { width:100%; border-collapse:collapse; }
+    th, td { padding:.75rem; border-bottom:1px solid #eee; text-align:left; }
+    th { background:#f8f9fa; }
+    form .row { display:grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap:1rem; }
+    form label { font-weight:600; display:block; margin-top:.5rem; }
+    form input, form select, form textarea { width:100%; padding:.5rem; border:1px solid #ddd; border-radius:6px; }
+    .actions { display:flex; gap:.5rem; align-items:center; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="topbar">
+      <h2>🚗 Admin - Aymen Car's</h2>
+      <div class="nav">
+        <a href="/dashboard/">Dashboard</a>
+        <a href="/manage/cars/">Voitures</a>
+        <a href="/manage/agencies/">Agences</a>
+        <a href="/manage/services/">Services</a>
+        <a href="/manage/reservations/">Réservations</a>
+        <a href="/manage/users/">Utilisateurs</a>
+        <a href="/manage/contacts/">Contacts</a>
+      </div>
+    </div>
+
+    <div class="card">
+      {% block content %}{% endblock %}
+    </div>
+  </div>
+</body>
+</html> 
